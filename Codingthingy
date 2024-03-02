@@ -9,7 +9,7 @@ pygame.init()
 # Set up some constants
 WIDTH, HEIGHT = 1024, 968
 FONT = pygame.font.Font(None, 36)
-SUBJECTS = ['Math', 'Science', 'History']
+SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
 GRADES = list(range(1, 11)) 
 
 # Set up the display
@@ -147,8 +147,7 @@ def make_grade_lambda(grade):
 
 def draw_level_buttons():
     for i, level in enumerate(GRADES):
-        draw_button(f"Level {level}", 550, 100 + i * 60, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(level))
-
+        draw_button(f"Level {level}", 100 + i * 60, 550, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(level))
 def choose_level(grade):
 	state['grade'] = grade
 
