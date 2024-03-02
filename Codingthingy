@@ -1,5 +1,6 @@
 import pygame
 import sys
+import math
 import random
 # m
 # Initialize Pygame
@@ -58,10 +59,12 @@ def choose_subject(subject):
 def next_level():
     state['level'].difficulty += 1
     
+
+
 def generate_math_problem():
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
-    operator = random.choice(['+', '-', '*', '/'])
+    operator = random.choice(['+', '-', '*', '/', 'log', 'exp'])
 
     if operator == '+':
         question = f"{num1} + {num2}"
@@ -72,15 +75,22 @@ def generate_math_problem():
     elif operator == '*':
         question = f"{num1} * {num2}"
         answer = num1 * num2
-    else:
+    elif operator == '/':
         # For division, we'll make sure to divide the larger number by the smaller one
         # to avoid fractional answers.
         num1, num2 = max(num1, num2), min(num1, num2)
         question = f"{num1} / {num2}"
         answer = num1 / num2
+    elif operator == 'log':
+        # For log, we'll use num1 as the base and num2 as the number
+        question = f"log_{num1}({num2})"
+        answer = math.log(num2, num1)
+    else:  # operator == 'exp'
+        # For exponentiation, we'll use num1 as the base and num2 as the exponent
+        question = f"{num1}^{num2}"
+        answer = num1 ** num2
 
     return question, answer
-
 
 
 # Game loop
