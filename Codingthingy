@@ -1,0 +1,62 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Set up some constants
+WIDTH, HEIGHT = 800, 600
+FONT = pygame.font.Font(None, 36)
+CHARACTERS = ['Character 1', 'Character 2', 'Character 3']
+SUBJECTS = ['Math', 'Science', 'History']
+
+# Set up the display
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Set up the game state
+state = {
+    'character': None,
+    'subject': None,
+}
+
+def draw_text(text, x, y):
+    text_surface = FONT.render(text, True, (255, 255, 255))
+    screen.blit(text_surface, (x, y))
+
+def draw_button(text, x, y, width, height, color, hover_color, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        pygame.draw.rect(screen, hover_color, (x, y, width, height))
+        if click[0] == 1 and action is not None:
+            action()
+    else:
+        pygame.draw.rect(screen, color, (x, y, width, height))
+
+    draw_text(text, x + (width / 2), y + (height / 2))
+
+def choose_character(character):
+    state['character'] = character
+
+def choose_subject(subject):
+    state['subject'] = subject
+
+# Game loop
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    screen.fill((0, 0, 0))
+
+    draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
+
+    for i, character in enumerate(CHARACTERS):
+        draw_button(character, 50, 100 + i * 60, 200, 50, (0, 0, 255), (0, 0, 128), lambda: choose_character(character))
+
+    for i, subject in enumerate(SUBJECTS):
+        draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda: choose_subject(subject))
+
+    pygame.display.flip()
