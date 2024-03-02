@@ -52,18 +52,7 @@ def draw_button(text, x, y, width, height, color, hover_color, action=None):
 	draw_text(text, x + (width / 2), y + (height / 2))
 
 
-def choose_subject(subject):
-	state['subject'] = subject
-	state['level'] = Level(subject, 1)
-
-def next_level():
-	state['level'].difficulty += 1
-	
-def choose_grade(grade):
-	state['grade'] = grade
-
-
-def parse_questions(file_path, grade_level):
+def parse_questions(file_path, levels):
 	with open(file_path, 'r') as file:
 		content = file.read()
 
@@ -77,7 +66,7 @@ def parse_questions(file_path, grade_level):
 		grade = int(grade_match.group(1)) if grade_match else None
 
 		# If this section's grade doesn't match the requested grade, skip it
-		if grade != grade_level:
+		if grade != levels:
 			continue
 
 		# Extract the questions and answers
@@ -132,20 +121,27 @@ def generate_math_problem():
 	return question, answer
 
 # Set up the game state
+
+def choose_subject(subject):
+	state['subject'] = subject
+	state['level'] = Level(subject, 1)
+
+	
+def choose_level(grade):
+	state['grade'] = grade
+
 state = {
-	'character': None,
 	'subject': None,
-	'level': 1,
 	'grade': None,
 }
 def make_grade_lambda(grade):
-    return lambda: choose_grade(grade)
+    return lambda: choose_level(grade)
 
-def draw_grade_buttons():
-    for i, grade in enumerate(GRADES):
-        draw_button(f"Grade {grade}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), make_grade_lambda(grade))
+def draw_level_buttons():
+    for i, level in enumerate(GRADES):
+        draw_button(f"Level {level}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), make_grade_lambda(level))
 
-def choose_grade(grade):
+def choose_level(grade):
     state['grade'] = grade
 
 while True:
@@ -160,11 +156,11 @@ while True:
         draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
         for i, subject in enumerate(SUBJECTS):
             draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda subject=subject: choose_subject(subject))
-    elif state['grade'] is None:
+    if state['grade'] is None:
         draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_grade_buttons()
+        draw_level_buttons()
     else:
         draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_text(f"Current Grade: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
+        draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
 
     pygame.display.flip()
