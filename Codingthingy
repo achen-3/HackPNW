@@ -7,14 +7,14 @@ import pygame,sys,math,random,re
 pygame.init()
 
 # Set up some constants
-WIDTH, HEIGHT = 1024, 968
+WIDTH, HEIGHT = 1000, 1000
 FONT = pygame.font.Font(None, 36)
-SUBJECTS = ['Math', 'Science', 'History']
+SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
 GRADES = list(range(1, 11)) 
 
 # Set up the display
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+WIDTH, HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 # Set up the game state
 state = {
 	'subject': None,
@@ -35,35 +35,45 @@ class Level:
 
 # Functions for drawing text and buttons
 def draw_text(text, x, y):
-	text_surface = FONT.render(text, True, (255, 255, 255))
-	screen.blit(text_surface, (x, y))
+	text_surface = FONT.render(text, True, TEXT_COLOR)
+	text_rect = text_surface.get_rect(center=(x, y))
+	screen.blit(text_surface, text_rect)
 
-def draw_button(text, x, y, width, height, color, hover_color, action=None):
+BUTTON_COLOR = (0, 200, 200)
+BUTTON_HOVER_COLOR = (0, 255, 255)
+TEXT_COLOR = (255, 255, 255)
+
+# New function for drawing circular buttons
+def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
 
-	if x + width > mouse[0] > x and y + height > mouse[1] > y:
+	if (x - mouse[0]) ** 2 + (y - mouse[1]) ** 2 < radius ** 2:
+		pygame.draw.circle(screen, hover_color, (x, y), radius)
+		if click[0] == 1 and action is not None:
+			action()
+			pygame.time.wait(200)  # Wait for 200 milliseconds
+	else:
+		pygame.draw.circle(screen, color, (x, y), radius)
+
+	draw_text(text, x, y)
+
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+
+	if x < mouse[0] < x + width and y < mouse[1] < y + height:
 		pygame.draw.rect(screen, hover_color, (x, y, width, height))
 		if click[0] == 1 and action is not None:
 			action()
+			pygame.time.wait(500)  # Wait for 200 milliseconds
 	else:
 		pygame.draw.rect(screen, color, (x, y, width, height))
 
-	draw_text(text, x + (width / 2), y + (height / 2))
+	draw_text(text, x + width / 2, y + height / 2)
 
 
-def choose_subject(subject):
-	state['subject'] = subject
-	state['level'] = Level(subject, 1)
-
-def next_level():
-	state['level'].difficulty += 1
-	
-def choose_grade(grade):
-	state['grade'] = grade
-
-
-def parse_questions(file_path, grade_level):
+def parse_questions(file_path, levels):
 	with open(file_path, 'r') as file:
 		content = file.read()
 
@@ -77,7 +87,7 @@ def parse_questions(file_path, grade_level):
 		grade = int(grade_match.group(1)) if grade_match else None
 
 		# If this section's grade doesn't match the requested grade, skip it
-		if grade != grade_level:
+		if grade != levels:
 			continue
 
 		# Extract the questions and answers
@@ -130,41 +140,61 @@ def generate_math_problem():
 		answer = num1 ** num2
 
 	return question, answer
-
-# Set up the game state
+# Initialize the game state
 state = {
-	'character': None,
 	'subject': None,
-	'level': 1,
 	'grade': None,
 }
-def make_grade_lambda(grade):
-    return lambda: choose_grade(grade)
 
-def draw_grade_buttons():
-    for i, grade in enumerate(GRADES):
-        draw_button(f"Grade {grade}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), make_grade_lambda(grade))
+def choose_subject(subject):
+	state['subject'] = subject
 
 def choose_grade(grade):
-    state['grade'] = grade
+	state['grade'] = grade
 
+def make_grade_lambda(grade):
+	return lambda: choose_grade(grade)
+
+def make_subject_lambda(subject):
+	return lambda: choose_subject(subject)
+
+def draw_level_buttons():
+	button_radius = 25
+	button_spacing = WIDTH // (len(GRADES) + 1)
+	for i, grade in enumerate(GRADES):
+		x = button_spacing * (i + 1)
+		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(grade))
+
+def draw_subject_buttons():
+	if state['grade'] is None:  # Ignore clicks on subject buttons if grade is not yet selected
+		return
+
+	button_width = 300
+	button_height = 50
+	button_spacing = (WIDTH - button_width * len(SUBJECTS)) // (len(SUBJECTS) + 1)
+	for i, subject in enumerate(SUBJECTS):
+		x = button_spacing * (i + 1) + button_width * i
+		y = HEIGHT / 2 - button_height / 2
+		draw_square_button(subject, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_subject_lambda(subject))
+
+# Adjust the y-coordinate of the welcome text to be at the top of the screen
+draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10)
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			sys.exit()
 
-    screen.fill((0, 0, 0))
+	screen.fill((0, 0, 0))
 
-    if state['subject'] is None:
-        draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
-        for i, subject in enumerate(SUBJECTS):
-            draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda subject=subject: choose_subject(subject))
-    elif state['grade'] is None:
-        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_grade_buttons()
-    else:
-        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_text(f"Current Grade: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
+	if state['grade'] is None:
+		draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
+		draw_level_buttons()
+	elif state['subject'] is None:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
+		draw_subject_buttons()
+	else:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
 
-    pygame.display.flip()
+	pygame.display.flip()
