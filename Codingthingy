@@ -1,7 +1,6 @@
-# Micah is black
-
 import pygame
 import sys
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -19,7 +18,18 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 state = {
     'character': None,
     'subject': None,
+    'level': 1,
 }
+
+class Level:
+    def __init__(self, subject, difficulty):
+        self.subject = subject
+        self.difficulty = difficulty
+
+    def generate_questions(self):
+        # This is a placeholder. In a real application, you would use NLP and your
+        # question database to generate appropriate questions for the subject and difficulty.
+        return [f"{self.subject} question {i}" for i in range(1, self.difficulty + 1)]
 
 def draw_text(text, x, y):
     text_surface = FONT.render(text, True, (255, 255, 255))
@@ -43,6 +53,10 @@ def choose_character(character):
 
 def choose_subject(subject):
     state['subject'] = subject
+    state['level'] = Level(subject, 1)
+
+def next_level():
+    state['level'].difficulty += 1
 
 # Game loop
 while True:
@@ -60,5 +74,9 @@ while True:
 
     for i, subject in enumerate(SUBJECTS):
         draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda: choose_subject(subject))
+
+    if state['subject'] is not None:
+        draw_text(f"Current Level: {state['level'].difficulty}", WIDTH / 2, HEIGHT / 2 + 100)
+        draw_button("Next Level", WIDTH / 2, HEIGHT / 2 + 150, 200, 50, (255, 0, 0), (128, 0, 0), next_level)
 
     pygame.display.flip()
