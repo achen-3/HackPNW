@@ -32,84 +32,6 @@ class Level:
 		# question database to generate appropriate questions for the subject and difficulty.
 		return [f"{self.subject} question {i}" for i in range(1, self.difficulty + 1)]
 
-
-# Functions for drawing text and buttons
-def draw_text(text, x, y):
-	text_surface = FONT.render(text, True, TEXT_COLOR)
-	text_rect = text_surface.get_rect(center=(x, y))
-	screen.blit(text_surface, text_rect)
-
-BUTTON_COLOR = (0, 200, 200)
-BUTTON_HOVER_COLOR = (0, 255, 255)
-TEXT_COLOR = (255, 255, 255)
-
-# New function for drawing circular buttons
-def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
-
-	if (x - mouse[0]) ** 2 + (y - mouse[1]) ** 2 < radius ** 2:
-		pygame.draw.circle(screen, hover_color, (x, y), radius)
-		if click[0] == 1 and action is not None:
-			action()
-			pygame.time.wait(200)  # Wait for 200 milliseconds
-	else:
-		pygame.draw.circle(screen, color, (x, y), radius)
-
-	draw_text(text, x, y)
-
-def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
-
-	if x < mouse[0] < x + width and y < mouse[1] < y + height:
-		pygame.draw.rect(screen, hover_color, (x, y, width, height))
-		if click[0] == 1 and action is not None:
-			action()
-			pygame.time.wait(500)  # Wait for 200 milliseconds
-	else:
-		pygame.draw.rect(screen, color, (x, y, width, height))
-
-	draw_text(text, x + width / 2, y + height / 2)
-
-
-# def parse_questions(file_path, levels):
-# 	with open(file_path, 'r') as file:
-# 		content = file.read()
-
-# 	# Split the content into sections for each grade
-# 	grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
-
-# 	questions = []
-# 	for section in grade_sections:
-# 		# Extract the grade
-# 		grade_match = re.search(r'Grade (\d+)', section)
-# 		grade = int(grade_match.group(1)) if grade_match else None
-
-# 		# If this section's grade doesn't match the requested grade, skip it
-# 		if grade != levels:
-# 			continue
-
-# 		# Extract the questions and answers
-# 		question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
-# 		answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
-
-# 		for question in question_matches:
-# 			answers = {letter: answer for letter, answer in answer_matches}
-# 			questions.append((question, answers))
-
-# 	return questions
-
-# # Usage:
-# questions = parse_questions('/Users/micahlam/Documents/GitHub/HackPNW/Science Questions', 1)
-# for question, answers in questions:
-# 	print(f"Question: {question}")
-# 	print("Answers:")
-# 	for letter, answer in answers.items():
-# 		print(f"{letter}) {answer}")
-
-
-
 def generate_math_problem():
 	num1 = random.randint(1, 10)
 	num2 = random.randint(1, 10)
@@ -140,6 +62,52 @@ def generate_math_problem():
 		answer = num1 ** num2
 
 	return question, answer
+
+
+
+
+
+
+
+# Functions for drawing text and buttons
+def draw_text(text, x, y):
+	text_surface = FONT.render(text, True, TEXT_COLOR)
+	text_rect = text_surface.get_rect(center=(x, y))
+	screen.blit(text_surface, text_rect)
+
+BUTTON_COLOR = (0, 200, 200)
+BUTTON_HOVER_COLOR = (0, 255, 255)
+TEXT_COLOR = (255, 255, 255)
+
+# New function for drawing circular buttons
+def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+
+	if (x - mouse[0]) ** 2 + (y - mouse[1]) ** 2 < radius ** 2:
+		pygame.draw.circle(screen, hover_color, (x, y), radius)
+		if click[0] == 1 and action is not None:
+			action()
+			pygame.time.wait(300)  # Wait for 200 milliseconds
+	else:
+		pygame.draw.circle(screen, color, (x, y), radius)
+
+	draw_text(text, x, y)
+
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+
+	if x < mouse[0] < x + width and y < mouse[1] < y + height:
+		pygame.draw.rect(screen, hover_color, (x, y, width, height))
+		if click[0] == 1 and action is not None:
+			action()
+	else:
+		pygame.draw.rect(screen, color, (x, y, width, height))
+
+	draw_text(text, x + width / 2, y + height / 2)
+
+
 # Initialize the game state
 state = {
 	'subject': None,
