@@ -7,8 +7,8 @@ pygame.init()
 # Set up some constants
 WIDTH, HEIGHT = 1024, 968
 FONT = pygame.font.Font(None, 36)
-CHARACTERS = ['Character 1', 'Character 2', 'Character 3']
 SUBJECTS = ['Math', 'Science', 'History']
+GRADES = list(range(1, 11)) 
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -57,7 +57,8 @@ def choose_subject(subject):
 def next_level():
     state['level'].difficulty += 1
     
-
+def choose_grade(grade):
+    state['grade'] = grade
 
 
 def parse_questions(file_path, grade_level):
@@ -128,6 +129,13 @@ def generate_math_problem():
 
     return question, answer
 
+# Set up the game state
+state = {
+    'character': None,
+    'subject': None,
+    'level': 1,
+    'grade': None,
+}
 
 # Game loop
 while True:
@@ -138,16 +146,17 @@ while True:
 
     screen.fill((0, 0, 0))
 
-    draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
-
-    for i, character in enumerate(CHARACTERS):
-        draw_button(character, 50, 100 + i * 60, 200, 50, (0, 0, 255), (0, 0, 128), lambda: choose_character(character))
-
-    for i, subject in enumerate(SUBJECTS):
-        draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda: choose_subject(subject))
-
-    if state['subject'] is not None:
-        draw_text(f"Current Level: {state['level'].difficulty}", WIDTH / 2, HEIGHT / 2 + 100)
-        draw_button("Next Level", WIDTH / 2, HEIGHT / 2 + 150, 200, 50, (255, 0, 0), (128, 0, 0), next_level)
-
+    if state['subject'] is None:
+        draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
+        for i, subject in enumerate(SUBJECTS):
+            draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda subject=subject: choose_subject(subject))
+    else:
+        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
+        if state['grade'] is None:
+            for i, grade in enumerate(GRADES):
+                draw_button(f"Grade {grade}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda grade=grade: choose_grade(grade))
+        else:
+            draw_text(f"Current Grade: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
+            draw_text(f"Current Level: {state['level'].difficulty}", WIDTH / 2, HEIGHT / 2 + 100)
+            draw_button("Next Level", WIDTH / 2, HEIGHT / 2 + 150, 200, 50, (255, 0, 0), (128, 0, 0), next_level)
     pygame.display.flip()
