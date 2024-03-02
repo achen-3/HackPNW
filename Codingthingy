@@ -1,6 +1,8 @@
+# Austin Chen and Micah Lam
+# HackPNW 2024 Spring
+
 import pygame,sys,math,random,re
 
-# m
 # Initialize Pygame
 pygame.init()
 
@@ -15,11 +17,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Set up the game state
 state = {
-    'character': None,
     'subject': None,
     'level': 1,
 }
 
+# Setup for the Level select
 class Level:
     def __init__(self, subject, difficulty):
         self.subject = subject
@@ -30,6 +32,8 @@ class Level:
         # question database to generate appropriate questions for the subject and difficulty.
         return [f"{self.subject} question {i}" for i in range(1, self.difficulty + 1)]
 
+
+# Functions for drawing text and buttons
 def draw_text(text, x, y):
     text_surface = FONT.render(text, True, (255, 255, 255))
     screen.blit(text_surface, (x, y))
@@ -47,8 +51,6 @@ def draw_button(text, x, y, width, height, color, hover_color, action=None):
 
     draw_text(text, x + (width / 2), y + (height / 2))
 
-def choose_character(character):
-    state['character'] = character
 
 def choose_subject(subject):
     state['subject'] = subject
