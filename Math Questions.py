@@ -1,5 +1,4 @@
-import sympy as sp
-import random
+import sympy as sp, random
 
 def generate_and_solve_math_problem():
 	x = sp.symbols('x')
