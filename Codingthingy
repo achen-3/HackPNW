@@ -35,21 +35,29 @@ class Level:
 
 # Functions for drawing text and buttons
 def draw_text(text, x, y):
-	text_surface = FONT.render(text, True, (255, 255, 255))
-	screen.blit(text_surface, (x, y))
+	text_surface = FONT.render(text, True, TEXT_COLOR)
+	text_rect = text_surface.get_rect(center=(x, y))
+	screen.blit(text_surface, text_rect)
 
-def draw_button(text, x, y, width, height, color, hover_color, action=None):
+BUTTON_COLOR = (0, 200, 200)
+BUTTON_HOVER_COLOR = (0, 255, 255)
+TEXT_COLOR = (255, 255, 255)
+
+# New function for drawing circular buttons
+def draw_button(text, x, y, radius, color, hover_color, action=None):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
 
-	if x + width > mouse[0] > x and y + height > mouse[1] > y:
-		pygame.draw.rect(screen, hover_color, (x, y, width, height))
+	distance = math.sqrt((x - mouse[0]) ** 2 + (y - mouse[1]) ** 2)
+
+	if distance < radius:
+		pygame.draw.circle(screen, hover_color, (x, y), radius)
 		if click[0] == 1 and action is not None:
 			action()
 	else:
-		pygame.draw.rect(screen, color, (x, y, width, height))
+		pygame.draw.circle(screen, color, (x, y), radius)
 
-	draw_text(text, x + (width / 2), y + (height / 2))
+	draw_text(text, x, y)
 
 
 def parse_questions(file_path, levels):
@@ -135,32 +143,32 @@ state = {
 	'grade': None,
 }
 def make_grade_lambda(grade):
-    return lambda: choose_level(grade)
+	return lambda: choose_level(grade)
 
 def draw_level_buttons():
     for i, level in enumerate(GRADES):
-        draw_button(f"Level {level}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), make_grade_lambda(level))
+        draw_button(f"Level {level}", 550, 100 + i * 60, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(level))
 
 def choose_level(grade):
-    state['grade'] = grade
+	state['grade'] = grade
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			sys.exit()
 
-    screen.fill((0, 0, 0))
+	screen.fill((0, 0, 0))
 
-    if state['subject'] is None:
-        draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
-        for i, subject in enumerate(SUBJECTS):
-            draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda subject=subject: choose_subject(subject))
-    if state['grade'] is None:
-        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_level_buttons()
-    else:
-        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
+	if state['subject'] is None:
+		draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
+		for i, subject in enumerate(SUBJECTS):
+			draw_button(subject, 550, 100 + i * 60, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, lambda subject=subject: choose_subject(subject))
+	if state['grade'] is None:
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
+		draw_level_buttons()
+	else:
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
 
-    pygame.display.flip()
+	pygame.display.flip()
