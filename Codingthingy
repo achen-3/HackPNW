@@ -17,129 +17,137 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Set up the game state
 state = {
-    'subject': None,
-    'level': 1,
+	'subject': None,
+	'level': 1,
 }
 
 # Setup for the Level select
 class Level:
-    def __init__(self, subject, difficulty):
-        self.subject = subject
-        self.difficulty = difficulty
+	def __init__(self, subject, difficulty):
+		self.subject = subject
+		self.difficulty = difficulty
 
-    def generate_questions(self):
-        # This is a placeholder. In a real application, you would use NLP and your
-        # question database to generate appropriate questions for the subject and difficulty.
-        return [f"{self.subject} question {i}" for i in range(1, self.difficulty + 1)]
+	def generate_questions(self):
+		# This is a placeholder. In a real application, you would use NLP and your
+		# question database to generate appropriate questions for the subject and difficulty.
+		return [f"{self.subject} question {i}" for i in range(1, self.difficulty + 1)]
 
 
 # Functions for drawing text and buttons
 def draw_text(text, x, y):
-    text_surface = FONT.render(text, True, (255, 255, 255))
-    screen.blit(text_surface, (x, y))
+	text_surface = FONT.render(text, True, (255, 255, 255))
+	screen.blit(text_surface, (x, y))
 
 def draw_button(text, x, y, width, height, color, hover_color, action=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
 
-    if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        pygame.draw.rect(screen, hover_color, (x, y, width, height))
-        if click[0] == 1 and action is not None:
-            action()
-    else:
-        pygame.draw.rect(screen, color, (x, y, width, height))
+	if x + width > mouse[0] > x and y + height > mouse[1] > y:
+		pygame.draw.rect(screen, hover_color, (x, y, width, height))
+		if click[0] == 1 and action is not None:
+			action()
+	else:
+		pygame.draw.rect(screen, color, (x, y, width, height))
 
-    draw_text(text, x + (width / 2), y + (height / 2))
+	draw_text(text, x + (width / 2), y + (height / 2))
 
 
 def choose_subject(subject):
-    state['subject'] = subject
-    state['level'] = Level(subject, 1)
+	state['subject'] = subject
+	state['level'] = Level(subject, 1)
 
 def next_level():
-    state['level'].difficulty += 1
-    
+	state['level'].difficulty += 1
+	
 def choose_grade(grade):
-    state['grade'] = grade
+	state['grade'] = grade
 
 
 def parse_questions(file_path, grade_level):
-    with open(file_path, 'r') as file:
-        content = file.read()
+	with open(file_path, 'r') as file:
+		content = file.read()
 
-    # Split the content into sections for each grade
-    grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
+	# Split the content into sections for each grade
+	grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
 
-    questions = []
-    for section in grade_sections:
-        # Extract the grade
-        grade_match = re.search(r'Grade (\d+)', section)
-        grade = int(grade_match.group(1)) if grade_match else None
+	questions = []
+	for section in grade_sections:
+		# Extract the grade
+		grade_match = re.search(r'Grade (\d+)', section)
+		grade = int(grade_match.group(1)) if grade_match else None
 
-        # If this section's grade doesn't match the requested grade, skip it
-        if grade != grade_level:
-            continue
+		# If this section's grade doesn't match the requested grade, skip it
+		if grade != grade_level:
+			continue
 
-        # Extract the questions and answers
-        question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
-        answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
+		# Extract the questions and answers
+		question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
+		answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
 
-        for question in question_matches:
-            answers = {letter: answer for letter, answer in answer_matches}
-            questions.append((question, answers))
+		for question in question_matches:
+			answers = {letter: answer for letter, answer in answer_matches}
+			questions.append((question, answers))
 
-    return questions
+	return questions
 
 # Usage:
 questions = parse_questions('/Users/micahlam/Documents/GitHub/HackPNW/Science Questions', 1)
 for question, answers in questions:
-    print(f"Question: {question}")
-    print("Answers:")
-    for letter, answer in answers.items():
-        print(f"{letter}) {answer}")
+	print(f"Question: {question}")
+	print("Answers:")
+	for letter, answer in answers.items():
+		print(f"{letter}) {answer}")
 
 
 
 def generate_math_problem():
-    num1 = random.randint(1, 10)
-    num2 = random.randint(1, 10)
-    operator = random.choice(['+', '-', '*', '/', 'log', 'exp'])
+	num1 = random.randint(1, 10)
+	num2 = random.randint(1, 10)
+	operator = random.choice(['+', '-', '*', '/', 'log', 'exp'])
 
-    if operator == '+':
-        question = f"{num1} + {num2}"
-        answer = num1 + num2
-    elif operator == '-':
-        question = f"{num1} - {num2}"
-        answer = num1 - num2
-    elif operator == '*':
-        question = f"{num1} * {num2}"
-        answer = num1 * num2
-    elif operator == '/':
-        # For division, we'll make sure to divide the larger number by the smaller one
-        # to avoid fractional answers.
-        num1, num2 = max(num1, num2), min(num1, num2)
-        question = f"{num1} / {num2}"
-        answer = num1 / num2
-    elif operator == 'log':
-        # For log, we'll use num1 as the base and num2 as the number
-        question = f"log_{num1}({num2})"
-        answer = math.log(num2, num1)
-    else:  # operator == 'exp'
-        # For exponentiation, we'll use num1 as the base and num2 as the exponent
-        question = f"{num1}^{num2}"
-        answer = num1 ** num2
+	if operator == '+':
+		question = f"{num1} + {num2}"
+		answer = num1 + num2
+	elif operator == '-':
+		question = f"{num1} - {num2}"
+		answer = num1 - num2
+	elif operator == '*':
+		question = f"{num1} * {num2}"
+		answer = num1 * num2
+	elif operator == '/':
+		# For division, we'll make sure to divide the larger number by the smaller one
+		# to avoid fractional answers.
+		num1, num2 = max(num1, num2), min(num1, num2)
+		question = f"{num1} / {num2}"
+		answer = num1 / num2
+	elif operator == 'log':
+		# For log, we'll use num1 as the base and num2 as the number
+		question = f"log_{num1}({num2})"
+		answer = math.log(num2, num1)
+	else:  # operator == 'exp'
+		# For exponentiation, we'll use num1 as the base and num2 as the exponent
+		question = f"{num1}^{num2}"
+		answer = num1 ** num2
 
-    return question, answer
+	return question, answer
 
 # Set up the game state
 state = {
-    'character': None,
-    'subject': None,
-    'level': 1,
-    'grade': None,
+	'character': None,
+	'subject': None,
+	'level': 1,
+	'grade': None,
 }
+def make_grade_lambda(grade):
+    return lambda: choose_grade(grade)
 
-# Game loop
+def draw_grade_buttons():
+    for i, grade in enumerate(GRADES):
+        draw_button(f"Grade {grade}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), make_grade_lambda(grade))
+
+def choose_grade(grade):
+    state['grade'] = grade
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -152,13 +160,11 @@ while True:
         draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 2)
         for i, subject in enumerate(SUBJECTS):
             draw_button(subject, 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda subject=subject: choose_subject(subject))
+    elif state['grade'] is None:
+        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
+        draw_grade_buttons()
     else:
         draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 50)  # Display the chosen subject at the top of the screen
-        if state['grade'] is None:
-            for i, grade in enumerate(GRADES):
-                draw_button(f"Grade {grade}", 550, 100 + i * 60, 200, 50, (0, 255, 0), (0, 128, 0), lambda grade=grade: choose_grade(grade))
-        else:
-            draw_text(f"Current Grade: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
-            draw_text(f"Current Level: {state['level'].difficulty}", WIDTH / 2, HEIGHT / 2 + 100)
-            draw_button("Next Level", WIDTH / 2, HEIGHT / 2 + 150, 200, 50, (255, 0, 0), (128, 0, 0), next_level)
+        draw_text(f"Current Grade: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade
+
     pygame.display.flip()
