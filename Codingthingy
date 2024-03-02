@@ -73,40 +73,40 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 	draw_text(text, x + width / 2, y + height / 2)
 
 
-def parse_questions(file_path, levels):
-	with open(file_path, 'r') as file:
-		content = file.read()
+# def parse_questions(file_path, levels):
+# 	with open(file_path, 'r') as file:
+# 		content = file.read()
 
-	# Split the content into sections for each grade
-	grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
+# 	# Split the content into sections for each grade
+# 	grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
 
-	questions = []
-	for section in grade_sections:
-		# Extract the grade
-		grade_match = re.search(r'Grade (\d+)', section)
-		grade = int(grade_match.group(1)) if grade_match else None
+# 	questions = []
+# 	for section in grade_sections:
+# 		# Extract the grade
+# 		grade_match = re.search(r'Grade (\d+)', section)
+# 		grade = int(grade_match.group(1)) if grade_match else None
 
-		# If this section's grade doesn't match the requested grade, skip it
-		if grade != levels:
-			continue
+# 		# If this section's grade doesn't match the requested grade, skip it
+# 		if grade != levels:
+# 			continue
 
-		# Extract the questions and answers
-		question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
-		answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
+# 		# Extract the questions and answers
+# 		question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
+# 		answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
 
-		for question in question_matches:
-			answers = {letter: answer for letter, answer in answer_matches}
-			questions.append((question, answers))
+# 		for question in question_matches:
+# 			answers = {letter: answer for letter, answer in answer_matches}
+# 			questions.append((question, answers))
 
-	return questions
+# 	return questions
 
-# Usage:
-questions = parse_questions('/Users/micahlam/Documents/GitHub/HackPNW/Science Questions', 1)
-for question, answers in questions:
-	print(f"Question: {question}")
-	print("Answers:")
-	for letter, answer in answers.items():
-		print(f"{letter}) {answer}")
+# # Usage:
+# questions = parse_questions('/Users/micahlam/Documents/GitHub/HackPNW/Science Questions', 1)
+# for question, answers in questions:
+# 	print(f"Question: {question}")
+# 	print("Answers:")
+# 	for letter, answer in answers.items():
+# 		print(f"{letter}) {answer}")
 
 
 
