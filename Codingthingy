@@ -147,7 +147,7 @@ def make_grade_lambda(grade):
 
 def draw_level_buttons():
     for i, level in enumerate(GRADES):
-        draw_button(f"Level {level}", 100 + i * 60, 550, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(level))
+        draw_button(str(level), 100 + i * 60, 550, 25, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(level))
 def choose_level(grade):
 	state['grade'] = grade
 
