@@ -1,6 +1,90 @@
+answers = {
+    "11": "B",
+    "12": "C",
+    "13": "A",
+    "14": "C",
+    "15": "A",
+    "16": "A",
+    "17": "C",
+    "18": "C",
+    "19": "B",
+    "110": "A",
+    "21": "C",
+    "22": "C",
+    "23": "B",
+    "24": "A",
+    "25": "C",
+    "26": "D",
+    "27": "A",
+    "28": "B",
+    "29": "B",
+    "210": "D",
+    "31": "B",
+    "32": "A",
+    "33": "B",
+    "34": "C",
+    "35": "A",
+    "36": "C",
+    "37": "B",
+    "38": "C",
+    "39": "B",
+    "310": "A",
+    "41": "C",
+    "42": "A",
+    "43": "B",
+    "44": "B",
+    "45": "C",
+    "46": "B",
+    "47": "C",
+    "48": "B",
+    "49": "A",
+    "410": "A",
+    "51": "A",
+    "52": "A",
+    "53": "C",
+    "54": "D",
+    "55": "A",
+    "56": "B",
+    "57": "A",
+    "58": "B",
+    "59": "B",
+    "510": "A",
+    "61": "A",
+    "62": "A",
+    "63": "B",
+    "64": "B",
+    "65": "A",
+    "66": "A",
+    "67": "A",
+    "68": "A",
+    "69": "B",
+    "610": "A",
+    "71": "A",
+    "72": "A",
+    "73": "B",
+    "74": "C",
+    "75": "B",
+    "76": "C",
+    "77": "A",
+    "78": "B",
+    "79": "C",
+    "710": "A",
+    "81": "A",
+    "82": "C",
+    "83": "B",
+    "84": "B",
+    "85": "C",
+    "86": "A",
+    "87": "A",
+    "88": "B",
+    "89": "A",
+    "810": "C"
+}
+
+
 Science Questions
 
-**Grade 1 Science Questions:**
+Grade 1 Science Questions:
 
 1. What is the Earth's primary source of light?
    - A) Moon
@@ -57,12 +141,12 @@ Science Questions
    - D) Compass
 
 10. What are the different seasons of the year?
-    - A) Spring, Summer, Fall
+    - A) Spring, Summer, Fall, Winter
     - B) Morning, Afternoon, Evening
     - C) Rainy, Cloudy, Sunny
     - D) Hot, Warm, Cold
 
-**Grade 2 Science Questions:**
+Grade 2 Science Questions:
 
 1. What are the three states of matter?
    - A) Solid, Gas, Vapor
@@ -125,7 +209,7 @@ Science Questions
     - D) By evolving over time
 
 
-**Grade 3 Science Questions:**
+Grade 3 Science Questions:
 
 1. What is photosynthesis?
    - A) Process of breathing
@@ -187,7 +271,7 @@ Science Questions
     - C) Helps the cell move
     - D) Provides support to the cell
 
-**Grade 4 Science Questions:**
+Grade 4 Science Questions:
 
 1. What is the difference between a solid, liquid, and gas?
    - A) Shape and volume
@@ -250,7 +334,7 @@ Science Questions
     - D) The force of air resistance on objects
 
 
-**Grade 5 Science Questions:**
+Grade 5 Science Questions:
 
 1. What is the difference between a plant cell and an animal cell?
    - A) Plant cells have a cell wall and chloroplasts, animal cells do not
@@ -312,7 +396,7 @@ Science Questions
     - C) The principle that energy is always lost as heat during any process
     - D) The principle that energy is only conserved in mechanical systems
 
-**Grade 6 Science Questions:**
+Grade 6 Science Questions:
 
 1. What is the difference between speed and velocity?
    - A) Speed is a scalar quantity, velocity is a vector quantity
@@ -375,7 +459,7 @@ Science Questions
     - D) To regulate body temperature
 
 
-**Grade 7 Science Questions:**
+Grade 7 Science Questions:
 
 1. What is the difference between a physical change and a chemical change?
    - A) Physical change alters the state of matter, chemical change alters the composition
@@ -437,7 +521,7 @@ Science Questions
     - C) To produce energy for cells
     - D) To transport nutrients within cells
 
-**Grade 8 Science Questions:**
+Grade 8 Science Questions:
 
 1. What is the difference between an acid and a base?
    - A) Acids have a pH greater than 7, bases have a pH less than 7
@@ -499,7 +583,7 @@ Science Questions
     - C) Heat is always positive, temperature can be negative
     - D) Heat is measured in degrees Celsius, temperature is measured in joules
 
-**Grade 9 Science Questions:**
+Grade 9 Science Questions:
 
 1. What is the difference between a prokaryotic cell and a eukaryotic cell?
    - A) Prokaryotic cells have a nucleus, eukaryotic cells do not
@@ -563,7 +647,7 @@ Science Questions
     - C) Work = Force x Distance, Power = Force x Time
     - D) Work = Mass x Velocity, Power = Mass x Acceleration
 
-**Grade 10 Science Questions:**
+Grade 10 Science Questions:
 
 1. What is the difference between an atomic mass and atomic number?
    - A) Atomic mass is the number of protons, atomic number is the number of neutrons
