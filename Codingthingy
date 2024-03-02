@@ -1,7 +1,5 @@
-import pygame
-import sys
-import math
-import random
+import pygame,sys,math,random,re
+
 # m
 # Initialize Pygame
 pygame.init()
@@ -59,6 +57,44 @@ def choose_subject(subject):
 def next_level():
     state['level'].difficulty += 1
     
+
+
+
+def parse_questions(file_path, grade_level):
+    with open(file_path, 'r') as file:
+        content = file.read()
+
+    # Split the content into sections for each grade
+    grade_sections = re.split(r'\*\*Grade \d+ Science Questions:\*\*', content)[1:]
+
+    questions = []
+    for section in grade_sections:
+        # Extract the grade
+        grade_match = re.search(r'Grade (\d+)', section)
+        grade = int(grade_match.group(1)) if grade_match else None
+
+        # If this section's grade doesn't match the requested grade, skip it
+        if grade != grade_level:
+            continue
+
+        # Extract the questions and answers
+        question_matches = re.findall(r'\d+\. (.+)\n(?:   - [A-D]\) .+\n)+', section)
+        answer_matches = re.findall(r'- ([A-D])\) (.+)', section)
+
+        for question in question_matches:
+            answers = {letter: answer for letter, answer in answer_matches}
+            questions.append((question, answers))
+
+    return questions
+
+# Usage:
+questions = parse_questions('/Users/micahlam/Documents/GitHub/HackPNW/Science Questions', 1)
+for question, answers in questions:
+    print(f"Question: {question}")
+    print("Answers:")
+    for letter, answer in answers.items():
+        print(f"{letter}) {answer}")
+
 
 
 def generate_math_problem():
