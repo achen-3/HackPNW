@@ -42,7 +42,7 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 		pygame.draw.circle(screen, hover_color, (x, y), radius)
 		if click[0] == 1 and action is not None:
 			action()
-			pygame.time.wait(300)  # Wait for 200 milliseconds
+			pygame.time.delay(300)  # Prevent the button from being clicked multiple times
 	else:
 		pygame.draw.circle(screen, color, (x, y), radius)
 	draw_text(text, x, y)
@@ -254,14 +254,15 @@ def text_objects(text, font):
 	return text_surface, text_surface.get_rect()
 
 
-def draw_button(text, x, y, width, height, color, hover_color, on_click):
+#clicked = False
+def draw_button(text, x, y, width, height, color, hover_color, on_click, state):
 	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
 
 	if x + width > mouse[0] > x and y + height > mouse[1] > y:
 		pygame.draw.rect(screen, hover_color, (x, y, width, height))
-		if click[0] == 1 and on_click is not None:
+		if state['clicked'] and on_click is not None:
 			on_click()
+			state['clicked'] = False  # Reset clicked state after handling click
 	else:
 		pygame.draw.rect(screen, color, (x, y, width, height))
 
@@ -303,7 +304,7 @@ def draw_question_and_answers():
 		# Centralize buttons
 		button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
 		button_y = (i // 2) * (button_height + button_spacing) + button_y_start
-		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
+		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i), state)
 
 def process_answer(answer_index):
 	# This function will process the user's answer
@@ -324,12 +325,12 @@ def process_answer(answer_index):
 def draw_correct_answer_screen():
 	screen.fill((0, 0, 0))  # Fill the screen with black color
 	draw_text('Correct!', WIDTH / 2, HEIGHT / 2)  # Draw the text
-	draw_button('Next Question', button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), next_question)
+	draw_button('Next Question', button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), next_question, state)
 
 def draw_wrong_answer_screen():
 	screen.fill((0, 0, 0))  # Fill the screen with black color
 	draw_text('Wrong Answer!', WIDTH / 2, HEIGHT / 2)  # Draw the text
-	draw_button('Next Question', button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), next_question)
+	draw_button('Next Question', button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), next_question, state)
 
 button_width = 200
 button_height = 50
@@ -362,11 +363,18 @@ def next_question():
 
 	state['processing_question'] = False
 # Main game loop
+
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
-			sys.exit()
+		elif event.type == pygame.MOUSEBUTTONDOWN:
+			if event.button == 1:  # Left mouse button
+				state['clicked'] = True
+		elif event.type == pygame.MOUSEBUTTONUP:
+			if event.button == 1:  # Left mouse button
+				state['clicked'] = False
+	
 		if state['subject'] == 'Numerical Odyssey' and InputBox is not None:
 			InputBox.handle_event(event)
 	screen.fill((0, 0, 0))
