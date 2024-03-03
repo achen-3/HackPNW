@@ -68,7 +68,7 @@ Grade6Question6 = ["How does sound travel through a medium?", "Through electroma
 Grade6Question7 = ["Which of the following is a renewable energy source?", "Natural Gas", "Coal", "Solar Power", "Nuclear Power", 3]
 Grade6Question8 = ["What is the process of a gas changing into a liquid?", "Evaporation", "Condensation", "Sublimation", "Boiling", 2]
 Grade6Question9 = ["What is the function of the nucleus in a cell?", "To produce energy", "To control cell activities and store genetic information", "To synthesize proteins", "To provide structural support", 2]
-Grade6Question10 = ["Which planet is known as the 'Blue Planet'?",  "Earth",  "Neptune",  "Uranus",  "Mercury",  1]
+Grade6Question10 = ["Which planet is known as the 'Blue Planet'?",  "Earth",  "Neptune",  "Uranus",  "Mercury",  2]
 
 # Grade 7 Science Questions and Answers
 Grade7Question1 = ["What is the process by which plants make their own food using sunlight?", "Respiration", "Photosynthesis", "Fermentation", "Transpiration", 2]
