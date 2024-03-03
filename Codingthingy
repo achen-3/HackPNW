@@ -46,12 +46,6 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 
 	draw_text(text, x, y)
 
-def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
-def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
@@ -109,8 +103,6 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
 
 	# Draw the center rectangle
 	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top + corner_radius, rect.width - 2 * corner_radius, rect.height - 2 * corner_radius))
-
-
 
 
 
@@ -257,7 +249,8 @@ def draw_question_and_answers():
 		button_color = (0, 0, 255)
 		button_hover_color = (0, 0, 128)
 		button_action = None  # Replace with the actual action
-		draw_button(button_text, button_x, button_y, button_width, button_height, button_color, button_hover_color, button_action)
+		draw_button(button_text, button_x, button_y, button_width, 
+			button_height, button_color, button_hover_color, button_action)
 
 
 
