@@ -1,7 +1,7 @@
 # Austin Chen and Micah Lam
 # HackPNW 2024 Spring
 
-import pygame,sys,math,random
+import pygame,sys,math,random, pygame.gfxdraw
 
 # Initialize Pygame
 pygame.init()
@@ -43,19 +43,44 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 	draw_text(text, x, y)
 
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
 
-	if x < mouse[0] < x + width and y < mouse[1] < y + height:
-		pygame.draw.rect(screen, hover_color, (x, y, width, height))
-		if click[0] == 1 and action is not None:
-			action()
-			while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
-				pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
-	else:
-		pygame.draw.rect(screen, color, (x, y, width, height))
+    rect = pygame.Rect(x, y, width, height)
+    color = hover_color if rect.collidepoint(mouse) else color
+    draw_rounded_rect(screen, rect, color, 10)
 
-	draw_text(text, x + width / 2, y + height / 2)
+    if rect.collidepoint(mouse) and click[0] == 1 and action is not None:
+        action()
+        while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
+            pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
+
+    draw_text(text, x + width / 2, y + height / 2)
+
+
+def draw_rounded_rect(surface, rect, color, corner_radius):
+    """Draw a rectangle with rounded corners"""
+    if corner_radius < 0:
+        raise ValueError(f"Corner radius {corner_radius} must be >= 0")
+    elif corner_radius > min(rect.width, rect.height) / 2:
+        raise ValueError(f"Corner radius {corner_radius} must be <= min(rect.width, rect.height) / 2")
+
+    # Draw the four corners
+    pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
+    pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
+    pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
+    pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
+    pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
+    pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
+    pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
+    pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
+
+    # Draw the four edge rectangles
+    pygame.draw.rect(surface, color, pygame.Rect(rect.left, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
+    pygame.draw.rect(surface, color, pygame.Rect(rect.right - corner_radius, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
+    pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top, rect.width - 2 * corner_radius, corner_radius))
+    pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.bottom - corner_radius, rect.width - 2 * corner_radius, corner_radius))
+
 
 
 # Initialize the game state
