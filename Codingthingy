@@ -53,6 +53,9 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
 
 	rect = pygame.Rect(x, y, width, height)
 	color = hover_color if rect.collidepoint(mouse) else color
