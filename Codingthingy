@@ -48,43 +48,45 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 	draw_text(text, x, y)
 
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
 
-    rect = pygame.Rect(x, y, width, height)
-    color = hover_color if rect.collidepoint(mouse) else color
-    draw_rounded_rect(screen, rect, color, 10)
+	rect = pygame.Rect(x, y, width, height)
+	color = hover_color if rect.collidepoint(mouse) else color
+	draw_rounded_rect(screen, rect, color, 10)
 
-    if rect.collidepoint(mouse) and click[0] == 1 and action is not None:
-        action()
-        while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
-            pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
+	if rect.collidepoint(mouse) and click[0] == 1 and action is not None:
+		action()
+		while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
+			pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
 
-    draw_text(text, x + width / 2, y + height / 2)
+	draw_text(text, x + width / 2, y + height / 2)
 
 
 def draw_rounded_rect(surface, rect, color, corner_radius):
-    """Draw a rectangle with rounded corners"""
-    if corner_radius < 0:
-        raise ValueError(f"Corner radius {corner_radius} must be >= 0")
-    elif corner_radius > min(rect.width, rect.height) / 2:
-        raise ValueError(f"Corner radius {corner_radius} must be <= min(rect.width, rect.height) / 2")
+	"""Draw a rectangle with rounded corners"""
+	if corner_radius < 0:
+		raise ValueError(f"Corner radius {corner_radius} must be >= 0")
+	elif corner_radius > min(rect.width, rect.height) / 2:
+		raise ValueError(f"Corner radius {corner_radius} must be <= min(rect.width, rect.height) / 2")
 
-    # Draw the four corners
-    pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
-    pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
-    pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
-    pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
-    pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
-    pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
-    pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
-    pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
+	# Draw the four corners
+	pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
+	pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.top + corner_radius, corner_radius, color)
+	pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
+	pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.top + corner_radius, corner_radius, color)
+	pygame.gfxdraw.aacircle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
+	pygame.gfxdraw.filled_circle(surface, rect.left + corner_radius, rect.bottom - corner_radius - 1, corner_radius, color)
+	pygame.gfxdraw.aacircle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
+	pygame.gfxdraw.filled_circle(surface, rect.right - corner_radius - 1, rect.bottom - corner_radius - 1, corner_radius, color)
 
-    # Draw the four edge rectangles
-    pygame.draw.rect(surface, color, pygame.Rect(rect.left, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
-    pygame.draw.rect(surface, color, pygame.Rect(rect.right - corner_radius, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
-    pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top, rect.width - 2 * corner_radius, corner_radius))
-    pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.bottom - corner_radius, rect.width - 2 * corner_radius, corner_radius))
+	# Draw the four edge rectangles
+	pygame.draw.rect(surface, color, pygame.Rect(rect.left, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
+	pygame.draw.rect(surface, color, pygame.Rect(rect.right - corner_radius, rect.top + corner_radius, corner_radius, rect.height - 2 * corner_radius))
+	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top, rect.width - 2 * corner_radius, corner_radius))
+	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.bottom - corner_radius, rect.width - 2 * corner_radius, corner_radius))
+
+
 
 
 
@@ -99,40 +101,25 @@ state = {
 	'subject': None,
 	'grade': None,
 }
-
 state['question_number'] = None
-def ask_question(question_number):
-    state['question_number'] = question_number
 
-def draw_question():
-    if state['question_number'] is None:
-        return
+def get_questions_for_grade(grade):
+	# Get all attributes of the science_questions module
+	all_questions = dir(science_questions)
 
-    # Get the question and answers
-    question_data = science_questions.questions[state['question_number']]
-    question = question_data[0]
-    answers = question_data[1:]
+	# Initialize an empty list to store the questions for the grade
+	grade_questions = []
 
-    # Display the question
-    draw_text(question, WIDTH / 2, HEIGHT / 4)  # Adjust the position as needed
+	# Iterate over all questions
+	for question in all_questions:
+		# Check if the question is for the given grade
+		if question.startswith(f"Grade{grade}"):
+			# If it is, add it to the list
+			question_list = getattr(science_questions, question)
+			grade_questions.append(question_list)
 
-    # Display the answer buttons
-    button_width = 200  # Adjust as needed
-    button_height = 50  # Adjust as needed
-    for i, answer in enumerate(answers):
-        x = (WIDTH - button_width) / 2
-        y = HEIGHT / 2 + i * (button_height + QUESTION_BUTTON_SPACING)
-        draw_square_button(answer, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_answer_lambda(answer))
-
-def make_answer_lambda(answer):
-    return lambda: check_answer(state['question_number'], answer)
-
-def check_answer(question_number, answer):
-    correct_answer = science_questions.correct_answers[question_number]
-    if answer == correct_answer:
-        messagebox.showinfo("Result", "Correct!")
-    else:
-        messagebox.showinfo("Result", "Incorrect!")
+	# Return the list of questions for the grade
+	return grade_questions
 
 
 
@@ -212,7 +199,45 @@ def draw_title_screen():
 	y = HEIGHT * 2 / 3
 	draw_square_button('Start', x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, start_game)
 
+def draw_button(text, x, y):
+	# Draw the button
+	pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(x, y, 200, 50))
 
+	# Draw the text
+	draw_text(text, x + 100, y + 25)
+
+	# Check if the button is clicked
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+	if x < mouse[0] < x + 200 and y < mouse[1] < y + 50:
+		if click[0] == 1:
+			return True
+
+	return False
+
+# Main game loop
+# while True:
+# 	for event in pygame.event.get():
+# 		if event.type == pygame.QUIT:
+# 			pygame.quit()
+# 			sys.exit()
+
+# 	screen.fill((0, 0, 0))
+
+# 	current_screen = state['screen_stack'][-1]
+# 	if current_screen == 'title':
+# 		draw_title_screen()
+# 	elif current_screen == 'grade':
+# 		draw_level_buttons()
+# 		draw_back_button()
+# 	elif current_screen == 'subject':
+# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
+# 		draw_subject_buttons()
+# 		draw_back_button()
+# 	else:  # current_screen == 'game'
+# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
+# 		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
+# 		draw_back_button()
 
 # Main game loop
 while True:
@@ -223,19 +248,26 @@ while True:
 
 	screen.fill((0, 0, 0))
 
-	current_screen = state['screen_stack'][-1]
-	if current_screen == 'title':
-		draw_title_screen()
-	elif current_screen == 'grade':
+	if state['grade'] is None:
+		draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
 		draw_level_buttons()
-		draw_back_button()
-	elif current_screen == 'subject':
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
+	elif state['subject'] is None:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
 		draw_subject_buttons()
-		draw_back_button()
-	else:  # current_screen == 'game'
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
-		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
-		draw_back_button()
+	else:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
+		if state['subject'] == 'Discovery Quest':
+			if state['question_number'] is None:
+				questions = get_questions_for_grade(state['grade'])
+				state['question_number'] = 0  # Start with the first question
+			question_data = questions[state['question_number']]
+			draw_text(question_data[0], WIDTH / 2, 150)  # Draw the question
+			for i in range(4):
+				button_text = question_data[i + 1]
+				button_y = 200 + i * 50
+				if draw_button(button_text, WIDTH / 2, button_y):
+					state['selected_answer'] = i + 1  # Store the index of the selected answer
+
 
 	pygame.display.flip()
