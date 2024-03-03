@@ -6,14 +6,25 @@ import sympy as sp
 # Initialize Pygame
 pygame.init()
 # Set up some constants
-WIDTH, HEIGHT = 1000, 1000
 FONT = pygame.font.Font(None, 36)
 SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
 GRADES = list(range(1, 11))
 QUESTION_BUTTON_SPACING = 100
+background_image_math = pygame.image.load("mathbackground.jpeg")
+backgroundimagescience = pygame.image.load('ScienceBackground.png')
+backgroundimagestitlescreen = pygame.image.load('titlescreen.jpeg')
+backgroundimageslevelscreen = pygame.image.load('levelscreen.jpeg')
+backgroundimagessubjectscreen = pygame.image.load('gamemodeselect.png')
+
+
 # Set up the display
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WIDTH, HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+background_image = pygame.transform.scale(background_image_math, (WIDTH, HEIGHT))
+backgroundimage = pygame.transform.scale(backgroundimagescience, (WIDTH, HEIGHT)).convert()
+backgroundimagetitle = pygame.transform.scale(backgroundimagestitlescreen, (WIDTH, HEIGHT)).convert()
+backgroundimagelevel = pygame.transform.scale(backgroundimageslevelscreen, (WIDTH, HEIGHT)).convert()
+backgroundimagesubect = pygame.transform.scale(backgroundimagessubjectscreen, (WIDTH, HEIGHT)).convert()
 pygame.display.set_caption('Study Quest')
 # Functions for drawing text and buttons
 def draw_text(text, x, y):
@@ -22,10 +33,10 @@ def draw_text(text, x, y):
 	screen.blit(text_surface, text_rect)
 
 
-def draw_text_with_size(text, x, y, size):
+def draw_text_with_size(text, x, y, size,color):
 	global UserAnswerInput
 	font = pygame.font.Font(None, size)
-	text_surface = font.render(text, True, (255, 255, 255))
+	text_surface = font.render(text, True, (color))
 	text_rect = text_surface.get_rect()
 	text_rect.midtop = (x, y)
 	screen.blit(text_surface, text_rect)
@@ -120,21 +131,16 @@ def get_questions_for_grade(grade):
 
 	return grade_questions
 
-# def fnInputMathAnswer():
-# 	global UserAnswerInput
-# 	UserAnswerInput = ""
-# 	while True:
-# 		for event in pygame.event.get():
-# 			if event.type == pygame.KEYDOWN:
+def draw_return_button():
+	button_radius = 50
+	button_x = 10 + button_radius  # 10 is the margin from the left edge, plus the radius
+	button_y = HEIGHT - 10 - button_radius  # 10 is the margin from the bottom edge, minus the radius
 
-# 				if pygame.key != pygame.K_RETURN:
-# 					guess = pygame.key.name(event.key)
-# 					UserAnswerInput += guess
-# 				if solution == UserAnswerInput:
-# 					current_screen == 'correct_answer'
-# 				else:
-# 					current_screen == 'wrong_answer'
-# 	return UserAnswerInput
+	draw_circle_button('Return', button_x, button_y, button_radius, (128,128,128), (105,105,105), return_to_start)
+def return_to_start():
+	# Clear the screen stack and push the 'title' screen onto it
+	state['screen_stack'].clear()
+	state['screen_stack'].append('title')
 
 def draw_equation(equation, screen, position, font, color=(255, 255, 255)):
 
@@ -206,20 +212,20 @@ def draw_subject_buttons():
 		draw_square_button(subject, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_subject_lambda(subject))
 	draw_text('Choose Game Mode', WIDTH / 2, HEIGHT / 4)  # Add this line
 # Adjust the y-coordinate of the welcome text to be at the top of the screen
-draw_text_with_size('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10, 100)
+#draw_text_with_size('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10, 100, (255,255,255))
 def draw_back_button():
-	button_width = 100
-	button_height = 50
-	x = WIDTH - button_width - 20  
-	y = HEIGHT - button_height - 20  
-	draw_square_button("Back", 50, 50, 100, 50, (0, 0, 255), (0, 0, 128), back, True)
+	button_radius = 50
+	button_x = WIDTH - 10 - button_radius  # 10 is the margin from the right edge, minus the radius
+	button_y = HEIGHT - 10 - button_radius  # 10 is the margin from the bottom edge, minus the radius
+
+	draw_circle_button('Back', button_x, button_y, button_radius, (128,128,128), (105,105,105), back)
 def reset_state():
 	state['subject'] = None
 	state['grade'] = None
 	state['screen'] = 'title'
 # Main game loop
 def draw_title_screen():
-	draw_text_with_size('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 3, 100)
+	draw_text_with_size('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 3, 100,(255,255,255))
 	draw_text('Click Start to begin', WIDTH / 2, HEIGHT / 2)
 	button_width = 200
 	button_height = 50
@@ -406,30 +412,40 @@ while True:
 
 	current_screen = state['screen_stack'][-1]
 	if current_screen == 'title':
+		screen.blit(backgroundimagetitle, (0, 0))
 		draw_title_screen()
 	elif current_screen == 'grade':
+		screen.blit(backgroundimageslevelscreen, (0, 0))
 		draw_level_buttons()
 		draw_back_button()
 	elif current_screen == 'subject':
-		draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
+		screen.blit(backgroundimagessubjectscreen, (0, 0))
+		draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36, (255,255,255))  # Level on the top right
 		draw_subject_buttons()
 		draw_back_button()
-	else:  # current_screen == 'game'
-		draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
+	else:
+		draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36,(255,255,255))  # Level on the top right
 		if state['subject'] == 'Discovery Quests':
+			screen.blit(backgroundimage, (0, 0))
+			draw_return_button()
 			draw_question_and_answers()
-			draw_text_with_size(f"Score: {state['score']}", WIDTH - 100, 50, 36)  # Display the score
+			draw_text_with_size(f"Score: {state['score']}", WIDTH - 100, 50, 36,(255,255,255))  # Display the score
+			draw_text_with_size(state['subject'], 100, 10, 24, (255,255,255)) 
 		elif state['subject'] == 'Numerical Odyssey':
+			screen.blit(background_image, (0, 0))
+			draw_return_button()
+			draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36,(0,0,0))  # Level on the top right
 			next_question_button = draw_next_question_button()
-			draw_text_with_size(f"Question: {equation}", 1000, 50, 80)  # Question below the game mode
-			draw_text_with_size(f"Answer: {user_input}", 1000, 500, 80)  # User input at the bottom
-			draw_text_with_size(f"Score: {state['score']}", WIDTH - 100, 50, 36)  # Display the score
+			draw_text_with_size(f"Question: {equation}", 1000, 50, 80,(0,0,0))  # Question below the game mode
+			draw_text_with_size(f"Answer: {user_input}", 1000, 500, 80,(0,0,0))  # User input at the bottom
+			draw_text_with_size(f"Score: {state['score']}", WIDTH - 100, 50, 36,(0,0,0))  # Display the score
+			draw_text_with_size(state['subject'], 100, 10, 24, (0,0,0)) 
 	if current_screen == 'correct_answer':
 		draw_correct_answer_screen()
 
 	elif current_screen == 'wrong_answer':
 		draw_wrong_answer_screen()
 
-	draw_text_with_size(state['subject'], 100, 10, 24)  # Game mode on the top left
+	 # Game mode on the top left
 
 	pygame.display.flip()
