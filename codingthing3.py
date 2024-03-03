@@ -411,19 +411,17 @@ while True:
 					user_input = ''
 					generate_new_equation()  # Replace with your function to generate a new problem
 					print('Next question')  # Debugging line
-				# elif event.key == pygame.K_t:  # The 't' key goes back to the title screen
-					# state['subject'] = 'title'
-
+     
 	screen.fill((0, 0, 0))
 
 	current_screen = state['screen_stack'][-1]
 	if current_screen == 'title':
 		draw_title_screen()
-	elif current_screen == 'grade':
-		draw_level_buttons()
-		draw_back_button()
 	elif current_screen == 'subject':
 		draw_subject_buttons()
+		draw_back_button()
+	elif current_screen == 'grade':
+		draw_level_buttons()
 		draw_back_button()
 	else:  # current_screen == 'game'
 		if state['subject'] == 'Discovery Quests':
