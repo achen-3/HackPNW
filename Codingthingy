@@ -199,7 +199,7 @@ def draw_level_buttons():
 		hover_color = (min(255, color[0] + 50), max(0, color[1] - 50), 0)
 		x = button_spacing * (i + 1)
 		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, color, hover_color, make_grade_lambda(grade))
-	draw_text('Level Select', WIDTH / 2, HEIGHT / 4)
+	draw_text_with_size('Level Select', WIDTH / 2, HEIGHT / 4, 60, (255,255,255))
 def draw_subject_buttons():
 	if state['grade'] is None:  # Ignore clicks on subject buttons if grade is not yet selected
 		return
@@ -210,7 +210,7 @@ def draw_subject_buttons():
 		x = button_spacing * (i + 1) + button_width * i
 		y = HEIGHT / 2 - button_height / 2
 		draw_square_button(subject, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_subject_lambda(subject))
-	draw_text('Choose Game Mode', WIDTH / 2, HEIGHT / 4)  # Add this line
+	draw_text_with_size('Choose Game Mode', WIDTH / 2, HEIGHT / 4, 60, (255,255,255))  # Add this line
 # Adjust the y-coordinate of the welcome text to be at the top of the screen
 #draw_text_with_size('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10, 100, (255,255,255))
 def draw_back_button():
