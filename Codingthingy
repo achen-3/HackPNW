@@ -47,17 +47,20 @@ BUTTON_COLOR = (0, 200, 200)
 BUTTON_HOVER_COLOR = (0, 255, 255)
 TEXT_COLOR = (255, 255, 255)
 # New function for drawing circular buttons
-def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
-	if (x - mouse[0]) ** 2 + (y - mouse[1]) ** 2 < radius ** 2:
-		pygame.draw.circle(screen, hover_color, (x, y), radius)
-		if click[0] == 1 and action is not None:
-			action()
-			pygame.time.wait(300)  # Wait for 200 milliseconds
-	else:
-		pygame.draw.circle(screen, color, (x, y), radius)
-	draw_text(text, x, y)
+def draw_circle_button(text, x, y, radius, color, hover_color, border_color, border_width, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    # Draw the border (a larger circle)
+    pygame.draw.circle(screen, border_color, (x, y), radius + border_width)
+    if (x - mouse[0]) ** 2 + (y - mouse[1]) ** 2 < radius ** 2:
+        pygame.draw.circle(screen, hover_color, (x, y), radius)
+        if click[0] == 1 and action is not None:
+            action()
+            pygame.time.wait(300)  # Wait for 200 milliseconds
+    else:
+        pygame.draw.circle(screen, color, (x, y), radius)
+    draw_text(text, x, y)
+
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
@@ -136,7 +139,7 @@ def draw_return_button():
 	button_x = 10 + button_radius  # 10 is the margin from the left edge, plus the radius
 	button_y = HEIGHT - 10 - button_radius  # 10 is the margin from the bottom edge, minus the radius
 
-	draw_circle_button('Return', button_x, button_y, button_radius, (128,128,128), (105,105,105), return_to_start)
+	draw_circle_button('Return', button_x, button_y, button_radius, (128,128,128), (105,105,105), (0, 0, 0), 5, return_to_start)
 def return_to_start():
 	# Clear the screen stack and push the 'title' screen onto it
 	state['screen_stack'].clear()
@@ -198,7 +201,7 @@ def draw_level_buttons():
 		color = (255 * i // len(GRADES), 255 - 255 * i // len(GRADES), 0)
 		hover_color = (min(255, color[0] + 50), max(0, color[1] - 50), 0)
 		x = button_spacing * (i + 1)
-		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, color, hover_color, make_grade_lambda(grade))
+		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, color, hover_color, (0, 0, 0), 5, make_grade_lambda(grade))
 	draw_text_with_size('Level Select', WIDTH / 2, HEIGHT / 4, 60, (255,255,255))
 def draw_subject_buttons():
 	if state['grade'] is None:  # Ignore clicks on subject buttons if grade is not yet selected
@@ -218,7 +221,7 @@ def draw_back_button():
 	button_x = WIDTH - 10 - button_radius  # 10 is the margin from the right edge, minus the radius
 	button_y = HEIGHT - 10 - button_radius  # 10 is the margin from the bottom edge, minus the radius
 
-	draw_circle_button('Back', button_x, button_y, button_radius, (128,128,128), (105,105,105), back)
+	draw_circle_button('Back', button_x, button_y, button_radius, (128,128,128), (105,105,105), (0, 0, 0), 5, back)
 def reset_state():
 	state['subject'] = None
 	state['grade'] = None
