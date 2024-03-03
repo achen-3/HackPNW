@@ -6,14 +6,17 @@ import sympy as sp
 # Initialize Pygame
 pygame.init()
 # Set up some constants
-WIDTH, HEIGHT = 1000, 1000
 FONT = pygame.font.Font(None, 36)
 SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
 GRADES = list(range(1, 11))
 QUESTION_BUTTON_SPACING = 100
+background_image_math = pygame.image.load("mathbackground.jpeg")
+
+
 # Set up the display
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WIDTH, HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+background_image = pygame.transform.scale(background_image_math, (WIDTH, HEIGHT))
 pygame.display.set_caption('Study Quest')
 # Functions for drawing text and buttons
 def draw_text(text, x, y):
@@ -420,6 +423,8 @@ while True:
 			draw_question_and_answers()
 			draw_text_with_size(f"Score: {state['score']}", WIDTH - 100, 50, 36)  # Display the score
 		elif state['subject'] == 'Numerical Odyssey':
+			screen.blit(background_image, (0, 0))
+			draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
 			next_question_button = draw_next_question_button()
 			draw_text_with_size(f"Question: {equation}", 1000, 50, 80)  # Question below the game mode
 			draw_text_with_size(f"Answer: {user_input}", 1000, 500, 80)  # User input at the bottom
