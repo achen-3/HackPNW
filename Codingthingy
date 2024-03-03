@@ -1,7 +1,6 @@
 # Austin Chen and Micah Lam
 # HackPNW 2024 Spring
 
-import pygame,sys,math,random
 import tkinter as tk
 from tkinter import messagebox
 import science_questions
