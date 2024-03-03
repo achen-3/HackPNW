@@ -2,6 +2,9 @@
 # HackPNW 2024 Spring
 
 import pygame,sys,math,random
+import tkinter as tk
+from tkinter import messagebox
+import science_questions
 
 # Initialize Pygame
 pygame.init()
@@ -10,7 +13,8 @@ pygame.init()
 WIDTH, HEIGHT = 1000, 1000
 FONT = pygame.font.Font(None, 36)
 SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
-GRADES = list(range(1, 11)) 
+GRADES = list(range(1, 11))
+QUESTION_BUTTON_SPACING = 100
 
 # Set up the display
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -56,11 +60,53 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 	draw_text(text, x + width / 2, y + height / 2)
 
 
+
+
+
+
+
 # Initialize the game state
 state = {
 	'subject': None,
 	'grade': None,
 }
+
+state['question_number'] = None
+def ask_question(question_number):
+    state['question_number'] = question_number
+
+def draw_question():
+    if state['question_number'] is None:
+        return
+
+    # Get the question and answers
+    question_data = science_questions.questions[state['question_number']]
+    question = question_data[0]
+    answers = question_data[1:]
+
+    # Display the question
+    draw_text(question, WIDTH / 2, HEIGHT / 4)  # Adjust the position as needed
+
+    # Display the answer buttons
+    button_width = 200  # Adjust as needed
+    button_height = 50  # Adjust as needed
+    for i, answer in enumerate(answers):
+        x = (WIDTH - button_width) / 2
+        y = HEIGHT / 2 + i * (button_height + QUESTION_BUTTON_SPACING)
+        draw_square_button(answer, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_answer_lambda(answer))
+
+def make_answer_lambda(answer):
+    return lambda: check_answer(state['question_number'], answer)
+
+def check_answer(question_number, answer):
+    correct_answer = science_questions.correct_answers[question_number]
+    if answer == correct_answer:
+        messagebox.showinfo("Result", "Correct!")
+    else:
+        messagebox.showinfo("Result", "Incorrect!")
+
+
+
 
 def choose_subject(subject):
 	state['subject'] = subject
