@@ -20,7 +20,7 @@ N16 = ["How do shadows form?", "Absorption", "Reflection", "Refraction", "Blocki
 N17 = ["What is the role of the heart in the human body?", "Circulation", "Digestion", "Respiration", "Excretion", 1]
 N18 = ["Name three different sources of energy.", "Oil, Gasoline, Coal", "Sun, Wind, Water", "Fire, Lightning, Electricity", "Metal, Wood, Plastic", 2]
 N19 = ["What is the difference between weather and climate?", "Same thing", "Weather is short-term, Climate is long-term", "Climate is short-term, Weather is long-term", "Weather is hot, Climate is cold", 2]
-N200 = ["How do animals adapt to their environment?",  "By moving to another place",  "By changing their body shape",  "By learning new skills",  "By evolving over time",  1]
+N20 = ["How do animals adapt to their environment?",  "By moving to another place",  "By changing their body shape",  "By learning new skills",  "By evolving over time",  1]
 
 # Grade 3 Science Questions and Answers
 N21 = ["What is photosynthesis?", "Process of breathing", "Process of making food", "Process of burning", "Process of sleeping", 2]
