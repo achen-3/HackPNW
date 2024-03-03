@@ -148,7 +148,7 @@ state = {
 	'subject': None,
 	'grade': None,
 }
-state['question_number'] = None
+state['question_number'] = 1
 
 def get_questions_for_grade(grade):
 	# Get all attributes of the science_questions module
@@ -378,13 +378,32 @@ def draw_wrong_answer_screen():
 	draw_text('Wrong Answer!', WIDTH / 2, HEIGHT / 2)  # Draw the text
 	draw_button('Try Again', WIDTH / 2, HEIGHT / 2 + 50, 200, 50, (0, 0, 255), (0, 0, 128), next_question)
 
+# def next_question():
+# 	state['question_number'] += 1  # Go to the next question
+# 	if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
+# 		state['question_number'] = None  # Reset the question number
+# 		state['screen_stack'].append('game_over')  # Go to the game over screen
+# 	else:
+# 		state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+state['processing_question'] = False
+
 def next_question():
-	state['question_number'] += 1  # Go to the next question
-	if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
-		state['question_number'] = None  # Reset the question number
-		state['screen_stack'].append('game_over')  # Go to the game over screen
-	else:
-		state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+    # If a question is currently being processed, do nothing
+    if state['processing_question']:
+        return
+
+    # Indicate that a question is currently being processed
+    state['processing_question'] = True
+
+    state['question_number'] += 1  # Go to the next question
+    if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
+        state['question_number'] = None  # Reset the question number
+        state['screen_stack'].append('game_over')  # Go to the game over screen
+    else:
+        state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+
+    # Indicate that the question has been processed
+    state['processing_question'] = False
 
 # Main game loop
 while True:
