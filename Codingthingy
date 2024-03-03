@@ -1,26 +1,34 @@
 # Austin Chen and Micah Lam
 # HackPNW 2024 Spring
 import science_questions
-import pygame,sys,math,random, pygame.gfxdraw, textwrap
+import pygame,math,random, pygame.gfxdraw, textwrap
 import sympy as sp
 # Initialize Pygame
 pygame.init()
 # Set up some constants
-WIDTH, HEIGHT = 1000, 1000
 FONT = pygame.font.Font(None, 36)
 SUBJECTS = ['Numerical Odyssey', 'Discovery Quests', 'Time Traveler Trivia']
 GRADES = list(range(1, 11))
-QUESTION_BUTTON_SPACING = 100
 # Set up the display
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WIDTH, HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 pygame.display.set_caption('Study Quest')
-# Functions for drawing text and buttons
+
+
+state = {
+	'screen_stack': ['title'],
+	'subject': None,
+	'grade': None,
+}
+state['question_number'] = 0
+state['processing_question'] = False
+
+score = 0
+
 def draw_text(text, x, y):
 	text_surface = FONT.render(text, True, TEXT_COLOR)
 	text_rect = text_surface.get_rect(center=(x, y))
 	screen.blit(text_surface, text_rect)
-
 
 def draw_text_with_size(text, x, y, size):
 	font = pygame.font.Font(None, size)
@@ -29,12 +37,6 @@ def draw_text_with_size(text, x, y, size):
 	text_rect.midtop = (x, y)
 	screen.blit(text_surface, text_rect)
 
-
-
-BUTTON_COLOR = (0, 200, 200)
-BUTTON_HOVER_COLOR = (0, 255, 255)
-TEXT_COLOR = (255, 255, 255)
-# New function for drawing circular buttons
 def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
@@ -46,6 +48,7 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 	else:
 		pygame.draw.circle(screen, color, (x, y), radius)
 	draw_text(text, x, y)
+
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
@@ -69,6 +72,7 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 	text_x = x + width / 2
 	text_y = y + height / 2
 	draw_text(text, text_x, text_y)
+
 def draw_rounded_rect(surface, rect, color, corner_radius):
 	"""Draw a rectangle with rounded corners"""
 	if corner_radius < 0:
@@ -91,8 +95,7 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
 	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.bottom - corner_radius, rect.width - 2 * corner_radius, corner_radius))
 	# Draw the center rectangle
 	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top + corner_radius, rect.width - 2 * corner_radius, rect.height - 2 * corner_radius))
-# Python
-# Python
+
 class InputBox:
 	def __init__(self, x, y, w, h, text=''):
 		self.rect = pygame.Rect(x, y, w, h)
@@ -121,14 +124,7 @@ class InputBox:
 	def draw(self, screen):
 		pygame.draw.rect(screen, self.color, self.rect, 2)
 		screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-# Initialize the game state
-state = {
-	'screen_stack': ['title'],
-	'subject': None,
-	'grade': None,
-}
-score = 0
-state['question_number'] = 1
+
 def get_questions_for_grade(grade):
 	# Get all attributes of the science_questions module
 	all_questions = dir(science_questions)
@@ -145,6 +141,7 @@ def get_questions_for_grade(grade):
 			grade_questions.append(question_list)
 
 	return grade_questions
+
 def generate_and_solve_math_problem():
 	x = sp.symbols('x')
 	operator = random.choice(['+', '-', '*', '/', 'log', 'exp', 'algebra'])
@@ -188,25 +185,37 @@ def generate_and_solve_math_problem():
 	return equation, solution
 equation, solution = generate_and_solve_math_problem()
 # print(f"Equation: {equation}\nAnswer: {solution}")
+
 def choose_subject(subject):
 	state['subject'] = subject
+
 def navigate_to(screen):
 	state['screen_stack'].append(screen)
+
 def back():
 	if len(state['screen_stack']) > 1:
 		state['screen_stack'].pop()
+
 def start_game():
 	navigate_to('grade')
+
 def choose_grade(grade):
 	state['grade'] = grade
 	navigate_to('subject')
+
 def choose_subject(subject):
 	state['subject'] = subject
 	navigate_to('game')
+
+def go_to_level_select():
+	state['screen_stack'] = ['grade']
+
 def make_grade_lambda(grade):
 	return lambda: choose_grade(grade)
+
 def make_subject_lambda(subject):
 	return lambda: choose_subject(subject)
+
 def draw_level_buttons():
 	button_radius = 50
 	button_spacing = WIDTH // (len(GRADES) + 1)
@@ -217,6 +226,7 @@ def draw_level_buttons():
 		x = button_spacing * (i + 1)
 		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, color, hover_color, make_grade_lambda(grade))
 	draw_text('Level Select', WIDTH / 2, HEIGHT / 4)
+
 def draw_subject_buttons():
 	if state['grade'] is None:  # Ignore clicks on subject buttons if grade is not yet selected
 		return
@@ -228,19 +238,19 @@ def draw_subject_buttons():
 		y = HEIGHT / 2 - button_height / 2
 		draw_square_button(subject, x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_subject_lambda(subject))
 	draw_text('Choose Game Mode', WIDTH / 2, HEIGHT / 4)  # Add this line
-# Adjust the y-coordinate of the welcome text to be at the top of the screen
-draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10)
+
 def draw_back_button():
 	button_width = 100
 	button_height = 50
 	x = WIDTH - button_width - 20  
 	y = HEIGHT - button_height - 20  
 	draw_square_button("Back", 50, 50, 100, 50, (0, 0, 255), (0, 0, 128), back, True)
+
 def reset_state():
 	state['subject'] = None
 	state['grade'] = None
 	state['screen'] = 'title'
-# Main game loop
+
 def draw_title_screen():
 	draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 3)
 	draw_text('Click Start to begin', WIDTH / 2, HEIGHT / 2)
@@ -254,8 +264,6 @@ def text_objects(text, font):
 	text_surface = font.render(text, True, (0, 0, 0))  # Replace (0, 0, 0) with the color you want for the text
 	return text_surface, text_surface.get_rect()
 
-
-#clicked = False
 def draw_button(text, x, y, width, height, color, hover_color, on_click, state):
 	mouse = pygame.mouse.get_pos()
 
@@ -278,11 +286,6 @@ def draw_button(text, x, y, width, height, color, hover_color, on_click, state):
 		text_rect.center = ((x + (width / 2)), (y + (height / 2)) + i * font_size)
 		screen.blit(text_surf, text_rect)
  
-
- 
-def go_to_level_select():
-	state['screen_stack'] = ['grade']
-
 def draw_question_and_answers():
 	questions = get_questions_for_grade(state['grade'])
 	if state['question_number'] is None:
@@ -308,26 +311,24 @@ def draw_question_and_answers():
 		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i), state)
 
 def process_answer(answer_index):
-	# This function will process the user's answer
-	# Replace this with your own logic
 	print(f"User selected answer {answer_index}")
 	correct_answer_index = get_correct_answer_index(state['grade'], state['question_number'])
-	if answer_index + 1 == correct_answer_index:  # Add 1 to the user's answer index
+	if answer_index + 1 == correct_answer_index:
 		state['screen_stack'].append('correct_answer')
 	else:
 		state['screen_stack'].append('wrong_answer')
+
 def get_correct_answer_index(grade, question_number):
 	questions = get_questions_for_grade(grade)
 	question_data = questions[question_number]
-	return question_data[-1]  # Get the last element of the list, which is the correct answer index
+	return question_data[-1]
+
 def process_answer(answer_index):
-	# This function will process the user's answer
 	correct_answer_index = get_correct_answer_index(state['grade'], state['question_number'])
 	if answer_index + 1 == correct_answer_index:  # Add 1 to the user's answer index
 		state['screen_stack'].append('correct_answer')
 	else:
 		state['screen_stack'].append('wrong_answer')
-# Then, in your main game loop, add the following conditions:
 
 def draw_correct_answer_screen():
 	global score
@@ -343,13 +344,6 @@ def draw_wrong_answer_screen():
 	draw_text('Wrong Answer!', WIDTH / 2, HEIGHT / 2)  # Draw the text
 	draw_button('Next Question', button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), next_question, state)
 
-button_width = 200
-button_height = 50
-button_x = WIDTH - button_width - 10  # 10 is the margin from the right edge
-button_y = HEIGHT - button_height - 10  # 10 is the margin from the bottom edge	
-next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-
-state['processing_question'] = False
 def next_question():
 	if state.get('processing_question', False):
 		return
@@ -373,8 +367,21 @@ def next_question():
 	state['screen_stack'].remove(screen_to_pop)
 
 	state['processing_question'] = False
-# Main game loop
 
+# Button Settings
+BUTTON_COLOR = (0, 200, 200)
+BUTTON_HOVER_COLOR = (0, 255, 255)
+TEXT_COLOR = (255, 255, 255)
+button_width = 200
+button_height = 50
+button_x = WIDTH - button_width - 10
+button_y = HEIGHT - button_height - 10
+next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
+
+
+# Main game loop
+draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10)
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
