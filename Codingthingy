@@ -148,7 +148,7 @@ state = {
 	'subject': None,
 	'grade': None,
 }
-state['question_number'] = 1
+state['question_number'] = None
 
 def get_questions_for_grade(grade):
 	# Get all attributes of the science_questions module
@@ -387,23 +387,23 @@ next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button
 state['processing_question'] = False
 
 
+# Keep track of the current question key
+current_question_key = 'N01'
+
 def next_question():
-    # If a question is currently being processed, do nothing
-    if state['processing_question']:
-        return
+    global current_question_key
 
-    # Indicate that a question is currently being processed
-    state['processing_question'] = True
+    # Convert the current question key to an integer, increment it, and convert it back to a string
+    next_question_number = int(current_question_key[1:]) + 1
+    next_question_key = 'N' + str(next_question_number).zfill(2)
 
-    state['question_number'] += 1  # Go to the next question
-    if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
-        state['question_number'] = None  # Reset the question number
-        state['screen_stack'].append('game_over')  # Go to the game over screen
+    # If the next question key is in the questions dictionary, update the current question key
+    if next_question_key in questions:
+        current_question_key = next_question_key
     else:
-        state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+        print("No more questions!")
+        # Handle the end of the questions here...
 
-    # Indicate that the question has been processed
-    state['processing_question'] = False
 
 # Main game loop
 while True:
