@@ -20,17 +20,6 @@ def draw_text(text, x, y):
 	text_surface = FONT.render(text, True, TEXT_COLOR)
 	text_rect = text_surface.get_rect(center=(x, y))
 	screen.blit(text_surface, text_rect)
-
-
-def draw_text_with_size(text, x, y, size):
-    font = pygame.font.Font(None, size)
-    text_surface = font.render(text, True, (255, 255, 255))
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    screen.blit(text_surface, text_rect)
-
-
-
 BUTTON_COLOR = (0, 200, 200)
 BUTTON_HOVER_COLOR = (0, 255, 255)
 TEXT_COLOR = (255, 255, 255)
@@ -94,33 +83,33 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
 # Python
 # Python
 class InputBox:
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = pygame.Rect(x, y, w, h)
-        self.color = pygame.Color('dodgerblue2')
-        self.text = text
-        self.font = pygame.font.Font(None, 32)
-        self.txt_surface = self.font.render(text, True, self.color)
-        self.active = False
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                self.active = not self.active
-            else:
-                self.active = False
-            self.color = pygame.Color('dodgerblue2') if self.active else pygame.Color('lightskyblue3')
-        if event.type == pygame.KEYDOWN:
-            if self.active:
-                if event.key == pygame.K_RETURN:
-                    print(self.text)
-                    self.text = ''
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
-                else:
-                    self.text += event.unicode
-                self.txt_surface = self.font.render(self.text, True, self.color)
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect, 2)
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+	def __init__(self, x, y, w, h, text=''):
+		self.rect = pygame.Rect(x, y, w, h)
+		self.color = pygame.Color('dodgerblue2')
+		self.text = text
+		self.font = pygame.font.Font(None, 32)
+		self.txt_surface = self.font.render(text, True, self.color)
+		self.active = False
+	def handle_event(self, event):
+		if event.type == pygame.MOUSEBUTTONDOWN:
+			if self.rect.collidepoint(event.pos):
+				self.active = not self.active
+			else:
+				self.active = False
+			self.color = pygame.Color('dodgerblue2') if self.active else pygame.Color('lightskyblue3')
+		if event.type == pygame.KEYDOWN:
+			if self.active:
+				if event.key == pygame.K_RETURN:
+					print(self.text)
+					self.text = ''
+				elif event.key == pygame.K_BACKSPACE:
+					self.text = self.text[:-1]
+				else:
+					self.text += event.unicode
+				self.txt_surface = self.font.render(self.text, True, self.color)
+	def draw(self, screen):
+		pygame.draw.rect(screen, self.color, self.rect, 2)
+		screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
 # Initialize the game state
 state = {
 	'screen_stack': ['title'],
@@ -144,6 +133,7 @@ def get_questions_for_grade(grade):
             grade_questions.append(question_list)
 
     return grade_questions
+
 def generate_and_solve_math_problem():
 	x = sp.symbols('x')
 	operator = random.choice(['+', '-', '*', '/', 'log', 'exp', 'algebra'])
@@ -252,52 +242,47 @@ def draw_title_screen():
 def text_objects(text, font):
 	text_surface = font.render(text, True, (0, 0, 0))  # Replace (0, 0, 0) with the color you want for the text
 	return text_surface, text_surface.get_rect()
-def draw_button(text, x, y, width, height, color, hover_color, on_click):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        pygame.draw.rect(screen, hover_color, (x, y, width, height))
-        if click[0] == 1 and on_click is not None:
-            on_click()
-    else:
-        pygame.draw.rect(screen, color, (x, y, width, height))
-
-    font_size = int(width / len(text))  # Set font size based on button width and text length
-    if font_size > height * 0.4:  # Limit font size to 40% of button height
-        font_size = int(height * 0.4)
-    small_text = pygame.font.Font(None, font_size)
-    text_surf, text_rect = text_objects(text, small_text)
-    text_rect.center = ((x + (width / 2)), (y + (height / 2)))
-    screen.blit(text_surf, text_rect)
+def draw_button(text, x, y, width, height, color, hover_color, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+	if x + width > mouse[0] > x and y + height > mouse[1] > y:
+		pygame.draw.rect(screen, hover_color, (x, y, width, height))
+		if click[0] == 1 and action is not None:
+			action()
+	else:
+		pygame.draw.rect(screen, color, (x, y, width, height))
+	small_text = pygame.font.Font("freesansbold.ttf", 20)
+	text_surf, text_rect = text_objects(text, small_text)
+	text_rect.center = ((x + (width / 2)), (y + (height / 2)))
+	screen.blit(text_surf, text_rect)
  
-def go_to_level_select():
-    state['screen_stack'] = ['grade']
-
 def draw_question_and_answers():
-    questions = get_questions_for_grade(state['grade'])
-    if state['question_number'] is None:
-        state['question_number'] = 0
-    question_data = questions[state['question_number']]
-    question_text = question_data[0]
-    answer_texts = question_data[1:-1]
-    # Calculate the center position for the question
-    question_center_x = WIDTH  / 2
-    # Draw the question at the center
-    draw_text(question_text, question_center_x, 50)
-    # Increase button size
-    button_width = 500  # Increase button width to 500
-    button_height = 200  # Increase button height to 200
-    button_y_start = 200
-    button_spacing = 20  # Reduce button spacing to 20
-    # Calculate total width of two buttons and a space
-    total_width = 2 * button_width + button_spacing
-    for i, answer_text in enumerate(answer_texts):
-        # Centralize buttons
-        button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
-        button_y = (i // 2) * (button_height + button_spacing) + button_y_start
-        draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
-
+	questions = get_questions_for_grade(state['grade'])
+	if state['question_number'] is None:
+		state['question_number'] = 0
+	question_data = questions[state['question_number']]
+	question_text = question_data[0]
+	answer_texts = question_data[1:-1]
+	# Create a font object
+	font = pygame.font.Font(None, 25)
+	# Get the width of the text
+	text_width, _ = font.size(question_text)
+	# Calculate the center position for the question
+	question_center_x = (WIDTH - text_width) / 2
+	# Draw the question at the center
+	draw_text(question_text, question_center_x, 50)
+	# Increase button size
+	button_width = 400
+	button_height = 150
+	button_y_start = 200
+	button_spacing = 50
+	# Calculate total width of two buttons and a space
+	total_width = 2 * button_width + button_spacing
+	for i, answer_text in enumerate(answer_texts):
+		# Centralize buttons
+		button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
+		button_y = (i // 2) * (button_height + button_spacing) + button_y_start
+		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
 def process_answer(answer_index):
 	# This function will process the user's answer
 	# Replace this with your own logic
@@ -329,8 +314,14 @@ button_height = 50
 button_x = WIDTH - button_width - 10  # 10 is the margin from the right edge
 button_y = HEIGHT - button_height - 10  # 10 is the margin from the bottom edge	
 next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-
-state['processing_question'] = False
+# def next_question():
+# 	state['question_number'] += 1  # Go to the next question
+# 	if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
+# 		state['question_number'] = None  # Reset the question number
+# 		state['screen_stack'].append('game_over')  # Go to the game over screen
+# 	else:
+# 		state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+# state['processing_question'] = False
 def next_question():
     if state.get('processing_question', False):
         return
@@ -354,32 +345,68 @@ def next_question():
     state['screen_stack'].remove(screen_to_pop)
 
     state['processing_question'] = False
+
+# Replace your existing next_question function with this improved version.
+
+
+
+
 # Main game loop
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if state['subject'] == 'Numerical Odyssey' and InputBox is not None:
-            InputBox.handle_event(event)
-    screen.fill((0, 0, 0))
-    draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
-    draw_text_with_size(state['subject'], 100, 10, 24)  # Game mode on the top left
-    current_screen = state['screen_stack'][-1]
-    if current_screen == 'title':
-        draw_title_screen()
-    elif current_screen == 'grade':
-        draw_level_buttons()
-        draw_back_button()
-    elif current_screen == 'subject':
-        draw_subject_buttons()
-        draw_back_button()
-    else:  # current_screen == 'game'
-        #draw_back_button()
-        if state['subject'] == 'Discovery Quests':
-            draw_question_and_answers()
-    if current_screen == 'correct_answer':
-        draw_correct_answer_screen()
-    elif current_screen == 'wrong_answer':
-        draw_wrong_answer_screen()
-    pygame.display.flip()
+	
+	current_screen = state['screen_stack'][-1]
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			sys.exit()
+		elif event.type == pygame.MOUSEBUTTONDOWN:
+			if state['screen_stack'][-1] == 'game':  # Only handle events during the game screen
+				if next_question_button_rect.collidepoint(event.pos) and not state.get('processing_question', False):
+					state['processing_question'] = True  # Indicate that a question is currently being processed
+					next_question()
+
+		# Add this section to handle events for InputBox (Numerical Odyssey)
+		elif current_screen == 'game' and state['subject'] == 'Numerical Odyssey' and InputBox is not None:
+			InputBox.handle_event(event)
+		# Draw the InputBox (Numerical Odyssey) if it exists
+	if current_screen == 'game' and state['subject'] == 'Numerical Odyssey' and InputBox is not None:
+		InputBox.draw(screen)
+
+	screen.fill((0, 0, 0))
+	# input_box.draw(screen)
+	if current_screen == 'title':
+		draw_title_screen()
+	elif current_screen == 'grade':
+		draw_level_buttons()
+		draw_back_button()
+	elif current_screen == 'subject':
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
+		draw_subject_buttons()
+		draw_back_button()
+	else:  # current_screen == 'game'
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
+		draw_back_button()
+		screen.fill((0, 0, 0))
+	if current_screen == 'title':
+		draw_title_screen()
+	elif current_screen == 'grade':
+		if state['grade'] is None:
+			draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
+		draw_level_buttons()
+		draw_back_button()
+	elif state['subject'] is None:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
+		draw_subject_buttons()
+	else:
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
+		if state['subject'] == 'Discovery Quests':
+			draw_question_and_answers()
+	if current_screen == 'correct_answer':
+		draw_correct_answer_screen()
+	elif current_screen == 'wrong_answer':
+		draw_wrong_answer_screen()
+	if state.get('processing_question', False) and state['question_number'] is not None:
+		state['processing_question'] = False
+	pygame.display.flip()
