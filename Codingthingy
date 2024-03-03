@@ -1,7 +1,7 @@
 # Austin Chen and Micah Lam
 # HackPNW 2024 Spring
 import science_questions
-import pygame,sys,math,random, pygame.gfxdraw
+import pygame,sys,math,random, pygame.gfxdraw, textwrap
 import sympy as sp
 # Initialize Pygame
 pygame.init()
@@ -23,11 +23,11 @@ def draw_text(text, x, y):
 
 
 def draw_text_with_size(text, x, y, size):
-    font = pygame.font.Font(None, size)
-    text_surface = font.render(text, True, (255, 255, 255))
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    screen.blit(text_surface, text_rect)
+	font = pygame.font.Font(None, size)
+	text_surface = font.render(text, True, (255, 255, 255))
+	text_rect = text_surface.get_rect()
+	text_rect.midtop = (x, y)
+	screen.blit(text_surface, text_rect)
 
 
 
@@ -94,33 +94,33 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
 # Python
 # Python
 class InputBox:
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = pygame.Rect(x, y, w, h)
-        self.color = pygame.Color('dodgerblue2')
-        self.text = text
-        self.font = pygame.font.Font(None, 32)
-        self.txt_surface = self.font.render(text, True, self.color)
-        self.active = False
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                self.active = not self.active
-            else:
-                self.active = False
-            self.color = pygame.Color('dodgerblue2') if self.active else pygame.Color('lightskyblue3')
-        if event.type == pygame.KEYDOWN:
-            if self.active:
-                if event.key == pygame.K_RETURN:
-                    print(self.text)
-                    self.text = ''
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
-                else:
-                    self.text += event.unicode
-                self.txt_surface = self.font.render(self.text, True, self.color)
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect, 2)
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+	def __init__(self, x, y, w, h, text=''):
+		self.rect = pygame.Rect(x, y, w, h)
+		self.color = pygame.Color('dodgerblue2')
+		self.text = text
+		self.font = pygame.font.Font(None, 32)
+		self.txt_surface = self.font.render(text, True, self.color)
+		self.active = False
+	def handle_event(self, event):
+		if event.type == pygame.MOUSEBUTTONDOWN:
+			if self.rect.collidepoint(event.pos):
+				self.active = not self.active
+			else:
+				self.active = False
+			self.color = pygame.Color('dodgerblue2') if self.active else pygame.Color('lightskyblue3')
+		if event.type == pygame.KEYDOWN:
+			if self.active:
+				if event.key == pygame.K_RETURN:
+					print(self.text)
+					self.text = ''
+				elif event.key == pygame.K_BACKSPACE:
+					self.text = self.text[:-1]
+				else:
+					self.text += event.unicode
+				self.txt_surface = self.font.render(self.text, True, self.color)
+	def draw(self, screen):
+		pygame.draw.rect(screen, self.color, self.rect, 2)
+		screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
 # Initialize the game state
 state = {
 	'screen_stack': ['title'],
@@ -129,21 +129,21 @@ state = {
 }
 state['question_number'] = 1
 def get_questions_for_grade(grade):
-    # Get all attributes of the science_questions module
-    all_questions = dir(science_questions)
-    
-    # Initialize an empty list to store the questions for the grade
-    grade_questions = []
-    
-    # Iterate over all questions
-    for question in all_questions:
-        # Check if the question is for the given grade
-        if question.startswith(f"Grade{grade}"):
-            # If it is, add each question separately to the list
-            question_list = getattr(science_questions, question)
-            grade_questions.append(question_list)
+	# Get all attributes of the science_questions module
+	all_questions = dir(science_questions)
+	
+	# Initialize an empty list to store the questions for the grade
+	grade_questions = []
+	
+	# Iterate over all questions
+	for question in all_questions:
+		# Check if the question is for the given grade
+		if question.startswith(f"Grade{grade}"):
+			# If it is, add each question separately to the list
+			question_list = getattr(science_questions, question)
+			grade_questions.append(question_list)
 
-    return grade_questions
+	return grade_questions
 def generate_and_solve_math_problem():
 	x = sp.symbols('x')
 	operator = random.choice(['+', '-', '*', '/', 'log', 'exp', 'algebra'])
@@ -252,51 +252,58 @@ def draw_title_screen():
 def text_objects(text, font):
 	text_surface = font.render(text, True, (0, 0, 0))  # Replace (0, 0, 0) with the color you want for the text
 	return text_surface, text_surface.get_rect()
+
+
 def draw_button(text, x, y, width, height, color, hover_color, on_click):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
 
-    if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        pygame.draw.rect(screen, hover_color, (x, y, width, height))
-        if click[0] == 1 and on_click is not None:
-            on_click()
-    else:
-        pygame.draw.rect(screen, color, (x, y, width, height))
+	if x + width > mouse[0] > x and y + height > mouse[1] > y:
+		pygame.draw.rect(screen, hover_color, (x, y, width, height))
+		if click[0] == 1 and on_click is not None:
+			on_click()
+	else:
+		pygame.draw.rect(screen, color, (x, y, width, height))
 
-    font_size = int(width / len(text))  # Set font size based on button width and text length
-    if font_size > height * 0.4:  # Limit font size to 40% of button height
-        font_size = int(height * 0.4)
-    small_text = pygame.font.Font(None, font_size)
-    text_surf, text_rect = text_objects(text, small_text)
-    text_rect.center = ((x + (width / 2)), (y + (height / 2)))
-    screen.blit(text_surf, text_rect)
+	font_size = int(height * 0.4)  # Set font size as 40% of button height
+	if len(text) > 20:  # Reduce font size if text is too long
+		font_size = int(height * 0.3)
+	small_text = pygame.font.Font(None, font_size)
+	
+	wrapped_text = textwrap.wrap(text, width=20)  # Wrap the text if it's too long
+	for i, line in enumerate(wrapped_text):
+		text_surf, text_rect = text_objects(line, small_text)
+		text_rect.center = ((x + (width / 2)), (y + (height / 2)) + i * font_size)
+		screen.blit(text_surf, text_rect)
+ 
+
  
 def go_to_level_select():
-    state['screen_stack'] = ['grade']
+	state['screen_stack'] = ['grade']
 
 def draw_question_and_answers():
-    questions = get_questions_for_grade(state['grade'])
-    if state['question_number'] is None:
-        state['question_number'] = 0
-    question_data = questions[state['question_number']]
-    question_text = question_data[0]
-    answer_texts = question_data[1:-1]
-    # Calculate the center position for the question
-    question_center_x = WIDTH  / 2
-    # Draw the question at the center
-    draw_text(question_text, question_center_x, 50)
-    # Increase button size
-    button_width = 500  # Increase button width to 500
-    button_height = 200  # Increase button height to 200
-    button_y_start = 200
-    button_spacing = 20  # Reduce button spacing to 20
-    # Calculate total width of two buttons and a space
-    total_width = 2 * button_width + button_spacing
-    for i, answer_text in enumerate(answer_texts):
-        # Centralize buttons
-        button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
-        button_y = (i // 2) * (button_height + button_spacing) + button_y_start
-        draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
+	questions = get_questions_for_grade(state['grade'])
+	if state['question_number'] is None:
+		state['question_number'] = 0
+	question_data = questions[state['question_number']]
+	question_text = question_data[0]
+	answer_texts = question_data[1:-1]
+	# Calculate the center position for the question
+	question_center_x = WIDTH  / 2
+	# Draw the question at the center
+	draw_text(question_text, question_center_x, 50)
+	# Increase button size
+	button_width = 500  # Increase button width to 500
+	button_height = 200  # Increase button height to 200
+	button_y_start = 200
+	button_spacing = 20  # Reduce button spacing to 20
+	# Calculate total width of two buttons and a space
+	total_width = 2 * button_width + button_spacing
+	for i, answer_text in enumerate(answer_texts):
+		# Centralize buttons
+		button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
+		button_y = (i // 2) * (button_height + button_spacing) + button_y_start
+		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
 
 def process_answer(answer_index):
 	# This function will process the user's answer
@@ -332,54 +339,54 @@ next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button
 
 state['processing_question'] = False
 def next_question():
-    if state.get('processing_question', False):
-        return
+	if state.get('processing_question', False):
+		return
 
-    state['processing_question'] = True
+	state['processing_question'] = True
 
-    # Check if there are questions for the current grade
-    questions = get_questions_for_grade(state['grade'])
-    if not questions:
-        state['question_number'] = None
-        state['processing_question'] = False
-        state['screen_stack'].append('game_over')
-        return
+	# Check if there are questions for the current grade
+	questions = get_questions_for_grade(state['grade'])
+	if not questions:
+		state['question_number'] = None
+		state['processing_question'] = False
+		state['screen_stack'].append('game_over')
+		return
 
-    # Move to the next question
-    state['question_number'] = (state['question_number'] + 1) % len(questions)
-    print(f"Next question number: {state['question_number']}")  # Debugging line
+	# Move to the next question
+	state['question_number'] = (state['question_number'] + 1) % len(questions)
+	print(f"Next question number: {state['question_number']}")  # Debugging line
 
-    # Pop the correct/wrong answer screen or game_over screen from the stack
-    screen_to_pop = 'correct_answer' if 'correct_answer' in state['screen_stack'] else 'wrong_answer' if 'wrong_answer' in state['screen_stack'] else 'game_over'
-    state['screen_stack'].remove(screen_to_pop)
+	# Pop the correct/wrong answer screen or game_over screen from the stack
+	screen_to_pop = 'correct_answer' if 'correct_answer' in state['screen_stack'] else 'wrong_answer' if 'wrong_answer' in state['screen_stack'] else 'game_over'
+	state['screen_stack'].remove(screen_to_pop)
 
-    state['processing_question'] = False
+	state['processing_question'] = False
 # Main game loop
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if state['subject'] == 'Numerical Odyssey' and InputBox is not None:
-            InputBox.handle_event(event)
-    screen.fill((0, 0, 0))
-    draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
-    draw_text_with_size(state['subject'], 100, 10, 24)  # Game mode on the top left
-    current_screen = state['screen_stack'][-1]
-    if current_screen == 'title':
-        draw_title_screen()
-    elif current_screen == 'grade':
-        draw_level_buttons()
-        draw_back_button()
-    elif current_screen == 'subject':
-        draw_subject_buttons()
-        draw_back_button()
-    else:  # current_screen == 'game'
-        #draw_back_button()
-        if state['subject'] == 'Discovery Quests':
-            draw_question_and_answers()
-    if current_screen == 'correct_answer':
-        draw_correct_answer_screen()
-    elif current_screen == 'wrong_answer':
-        draw_wrong_answer_screen()
-    pygame.display.flip()
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			sys.exit()
+		if state['subject'] == 'Numerical Odyssey' and InputBox is not None:
+			InputBox.handle_event(event)
+	screen.fill((0, 0, 0))
+	draw_text_with_size(f"Level: {state['grade']}", WIDTH - 100, 10, 36)  # Level on the top right
+	draw_text_with_size(state['subject'], 100, 10, 24)  # Game mode on the top left
+	current_screen = state['screen_stack'][-1]
+	if current_screen == 'title':
+		draw_title_screen()
+	elif current_screen == 'grade':
+		draw_level_buttons()
+		draw_back_button()
+	elif current_screen == 'subject':
+		draw_subject_buttons()
+		draw_back_button()
+	else:  # current_screen == 'game'
+		#draw_back_button()
+		if state['subject'] == 'Discovery Quests':
+			draw_question_and_answers()
+	if current_screen == 'correct_answer':
+		draw_correct_answer_screen()
+	elif current_screen == 'wrong_answer':
+		draw_wrong_answer_screen()
+	pygame.display.flip()
