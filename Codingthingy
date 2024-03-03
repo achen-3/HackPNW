@@ -383,14 +383,9 @@ button_height = 50
 button_x = WIDTH - button_width - 10  # 10 is the margin from the right edge
 button_y = HEIGHT - button_height - 10  # 10 is the margin from the bottom edge	
 next_question_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-# def next_question():
-# 	state['question_number'] += 1  # Go to the next question
-# 	if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
-# 		state['question_number'] = None  # Reset the question number
-# 		state['screen_stack'].append('game_over')  # Go to the game over screen
-# 	else:
-# 		state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
+
 state['processing_question'] = False
+
 
 def next_question():
     # If a question is currently being processed, do nothing
