@@ -50,6 +50,8 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 		pygame.draw.rect(screen, hover_color, (x, y, width, height))
 		if click[0] == 1 and action is not None:
 			action()
+			while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
+				pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
 	else:
 		pygame.draw.rect(screen, color, (x, y, width, height))
 
@@ -58,15 +60,28 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 
 # Initialize the game state
 state = {
+	'screen_stack': ['title'],
 	'subject': None,
 	'grade': None,
 }
 
-def choose_subject(subject):
-	state['subject'] = subject
+def navigate_to(screen):
+	state['screen_stack'].append(screen)
+
+def back():
+	if len(state['screen_stack']) > 1:
+		state['screen_stack'].pop()
+
+def start_game():
+	navigate_to('grade')
 
 def choose_grade(grade):
 	state['grade'] = grade
+	navigate_to('subject')
+
+def choose_subject(subject):
+	state['subject'] = subject
+	navigate_to('game')
 
 def make_grade_lambda(grade):
 	return lambda: choose_grade(grade)
@@ -75,12 +90,15 @@ def make_subject_lambda(subject):
 	return lambda: choose_subject(subject)
 
 def draw_level_buttons():
-	button_radius = 25
+	button_radius = 50
 	button_spacing = WIDTH // (len(GRADES) + 1)
 	for i, grade in enumerate(GRADES):
+		# Create a gradient from green to red
+		color = (255 * i // len(GRADES), 255 - 255 * i // len(GRADES), 0)
+		hover_color = (min(255, color[0] + 50), max(0, color[1] - 50), 0)
 		x = button_spacing * (i + 1)
-		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, BUTTON_COLOR, BUTTON_HOVER_COLOR, make_grade_lambda(grade))
-	draw_text('Level Select', WIDTH / 2, HEIGHT / 4)  # Add this line
+		draw_circle_button(str(grade), x, HEIGHT / 2 - button_radius, button_radius, color, hover_color, make_grade_lambda(grade))
+	draw_text('Level Select', WIDTH / 2, HEIGHT / 4)
 
 def draw_subject_buttons():
 	if state['grade'] is None:  # Ignore clicks on subject buttons if grade is not yet selected
@@ -97,6 +115,30 @@ def draw_subject_buttons():
 
 # Adjust the y-coordinate of the welcome text to be at the top of the screen
 draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 10)
+def draw_back_button():
+	button_width = 100
+	button_height = 50
+	x = WIDTH - button_width - 20  
+	y = HEIGHT - button_height - 20  
+	draw_square_button('Back', x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, back)
+
+def reset_state():
+	state['subject'] = None
+	state['grade'] = None
+	state['screen'] = 'title'
+
+# Main game loop
+
+def draw_title_screen():
+	draw_text('Welcome to Study Quest!', WIDTH / 2, HEIGHT / 3)
+	draw_text('Click Start to begin', WIDTH / 2, HEIGHT / 2)
+	button_width = 200
+	button_height = 50
+	x = (WIDTH - button_width) / 2
+	y = HEIGHT * 2 / 3
+	draw_square_button('Start', x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, start_game)
+
+
 
 # Main game loop
 while True:
@@ -107,14 +149,19 @@ while True:
 
 	screen.fill((0, 0, 0))
 
-	if state['grade'] is None:
-		draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
+	current_screen = state['screen_stack'][-1]
+	if current_screen == 'title':
+		draw_title_screen()
+	elif current_screen == 'grade':
 		draw_level_buttons()
-	elif state['subject'] is None:
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
+		draw_back_button()
+	elif current_screen == 'subject':
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
 		draw_subject_buttons()
-	else:
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
-		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
+		draw_back_button()
+	else:  # current_screen == 'game'
+		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
+		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
+		draw_back_button()
 
 	pygame.display.flip()
