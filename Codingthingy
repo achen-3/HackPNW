@@ -46,6 +46,12 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 
 	draw_text(text, x, y)
 
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
 def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
@@ -59,6 +65,7 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 		while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
 			pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
 
+	draw_text(text, x + width / 2, y + height / 2)
 	if is_back_button:
 		# Draw the back arrow
 		arrow_color = (255, 255, 255)  # White
@@ -212,48 +219,65 @@ def draw_title_screen():
 	x = (WIDTH - button_width) / 2
 	y = HEIGHT * 2 / 3
 	draw_square_button('Start', x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, start_game)
+ 
+# def draw_button(text, x, y):
+# 	# Draw the button
+# 	pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(x, y, 200, 50))
 
-def draw_button(text, x, y):
-	# Draw the button
-	pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(x, y, 200, 50))
+def text_objects(text, font):
+    text_surface = font.render(text, True, (0, 0, 0))  # Replace (0, 0, 0) with the color you want for the text
+    return text_surface, text_surface.get_rect()
 
-	# Draw the text
-	draw_text(text, x + 100, y + 25)
 
-	# Check if the button is clicked
-	mouse = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()
-	if x < mouse[0] < x + 200 and y < mouse[1] < y + 50:
-		if click[0] == 1:
-			return True
+def draw_button(text, x, y, width, height, color, hover_color, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
 
-	return False
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        pygame.draw.rect(screen, hover_color, (x, y, width, height))
+        if click[0] == 1 and action is not None:
+            action()
+    else:
+        pygame.draw.rect(screen, color, (x, y, width, height))
+
+    small_text = pygame.font.Font("freesansbold.ttf", 20)
+    text_surf, text_rect = text_objects(text, small_text)
+    text_rect.center = ((x + (width / 2)), (y + (height / 2)))
+    screen.blit(text_surf, text_rect)
+ 
+def draw_question_and_answers():
+    questions = get_questions_for_grade(state['grade'])
+    if state['question_number'] is None:
+        state['question_number'] = 0  # Start with the first question
+    question_data = questions[state['question_number']]
+    draw_text(question_data[0], WIDTH / 2, 150)  # Draw the question
+    for i in range(4):
+        button_text = question_data[i + 1]
+        button_x = WIDTH / 2
+        button_y = 200 + i * 60
+        button_width = 200
+        button_height = 50
+        button_color = (0, 0, 255)
+        button_hover_color = (0, 0, 128)
+        button_action = None  # Replace with the actual action
+        draw_button(button_text, button_x, button_y, button_width, button_height, button_color, button_hover_color, button_action)
+
+
+
+
+# 	# Draw the text
+# 	draw_text(text, x + 100, y + 25)
+
+# 	# Check if the button is clicked
+# 	mouse = pygame.mouse.get_pos()
+# 	click = pygame.mouse.get_pressed()
+# 	if x < mouse[0] < x + 200 and y < mouse[1] < y + 50:
+# 		if click[0] == 1:
+# 			return True
+
+# 	return False
 
 # Main game loop
-while True:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			pygame.quit()
-			sys.exit()
-
-	screen.fill((0, 0, 0))
-
-	current_screen = state['screen_stack'][-1]
-	if current_screen == 'title':
-		draw_title_screen()
-	elif current_screen == 'grade':
-		draw_level_buttons()
-		draw_back_button()
-	elif current_screen == 'subject':
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
-		draw_subject_buttons()
-		draw_back_button()
-	else:  # current_screen == 'game'
-		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
-		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
-		draw_back_button()
-
-# # Main game loop
 # while True:
 # 	for event in pygame.event.get():
 # 		if event.type == pygame.QUIT:
@@ -262,26 +286,40 @@ while True:
 
 # 	screen.fill((0, 0, 0))
 
-# 	if state['grade'] is None:
-# 		draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
+# 	current_screen = state['screen_stack'][-1]
+# 	if current_screen == 'title':
+# 		draw_title_screen()
+# 	elif current_screen == 'grade':
 # 		draw_level_buttons()
-# 	elif state['subject'] is None:
-# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
+# 		draw_back_button()
+# 	elif current_screen == 'subject':
+# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  
 # 		draw_subject_buttons()
-# 	else:
-# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
-# 		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
-# 		if state['subject'] == 'Discovery Quest':
-# 			if state['question_number'] is None:
-# 				questions = get_questions_for_grade(state['grade'])
-# 				state['question_number'] = 0  # Start with the first question
-# 			question_data = questions[state['question_number']]
-# 			draw_text(question_data[0], WIDTH / 2, 150)  # Draw the question
-# 			for i in range(4):
-# 				button_text = question_data[i + 1]
-# 				button_y = 200 + i * 50
-# 				if draw_button(button_text, WIDTH / 2, button_y):
-# 					state['selected_answer'] = i + 1  # Store the index of the selected answer
+# 		draw_back_button()
+# 	else:  # current_screen == 'game'
+# 		draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  
+# 		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  
+# 		draw_back_button()
 
+# Main game loop
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-	pygame.display.flip()
+    screen.fill((0, 0, 0))
+
+    if state['grade'] is None:
+        draw_text('Welcome to Study Quest!', WIDTH / 2, 50)  # Move the welcome text to the top
+        draw_level_buttons()
+    elif state['subject'] is None:
+        draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 100)  # Display the chosen grade below the welcome text
+        draw_subject_buttons()
+    else:
+        draw_text(f"Current Level: {state['grade']}", WIDTH / 2, 50)  # Display the chosen grade at the top
+        draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
+        if state['subject'] == 'Discovery Quests':
+            draw_question_and_answers()
+
+    pygame.display.flip()
