@@ -47,15 +47,9 @@ def draw_circle_button(text, x, y, radius, color, hover_color, action=None):
 
 	draw_text(text, x, y)
 
-<<<<<<< HEAD
-def draw_square_button(text, x, y, width, height, color, hover_color, action=None):
+def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
-=======
-def draw_square_button(text, x, y, width, height, color, hover_color, action=None, is_back_button=False):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
->>>>>>> 1dc0a852d3cee4d371b216afca83c070df3c911a
 
 	rect = pygame.Rect(x, y, width, height)
 	color = hover_color if rect.collidepoint(mouse) else color
@@ -66,24 +60,20 @@ def draw_square_button(text, x, y, width, height, color, hover_color, action=Non
 		while pygame.mouse.get_pressed()[0]:  # Wait for the mouse button to be released
 			pygame.event.pump()  # Process events to prevent the application from becoming unresponsive
 
-<<<<<<< HEAD
-	draw_text(text, x + width / 2, y + height / 2)
-=======
-    if is_back_button:
-        # Draw the back arrow
-        arrow_color = (255, 255, 255)  # White
-        arrow_margin = 10  # Margin from the edges of the button
-        arrow_width = 10  # Width of the arrow
-        arrow_height = height / 4  # Height of the arrow
-        arrow_points = [(x + arrow_margin, y + height / 2), (x + arrow_margin + arrow_width, y + height / 2 - arrow_height / 2), (x + arrow_margin + arrow_width, y + height / 2 + arrow_height / 2)]
-        pygame.draw.polygon(screen, arrow_color, arrow_points)
+	if is_back_button:
+		# Draw the back arrow
+		arrow_color = (255, 255, 255)  # White
+		arrow_margin = 10  # Margin from the edges of the button
+		arrow_width = 10  # Width of the arrow
+		arrow_height = height / 4  # Height of the arrow
+		arrow_points = [(x + arrow_margin, y + height / 2), (x + arrow_margin + arrow_width, y + height / 2 - arrow_height / 2), (x + arrow_margin + arrow_width, y + height / 2 + arrow_height / 2)]
+		pygame.draw.polygon(screen, arrow_color, arrow_points)
 
-    # Draw the text at the center of the button
-    text_x = x + width / 2
-    text_y = y + height / 2
-    draw_text(text, text_x, text_y)
+	# Draw the text at the center of the button
+	text_x = x + width / 2
+	text_y = y + height / 2
+	draw_text(text, text_x, text_y)
 
->>>>>>> 1dc0a852d3cee4d371b216afca83c070df3c911a
 
 
 def draw_rounded_rect(surface, rect, color, corner_radius):
@@ -111,8 +101,8 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
 
 
 
-    # Draw the center rectangle
-    pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top + corner_radius, rect.width - 2 * corner_radius, rect.height - 2 * corner_radius))
+	# Draw the center rectangle
+	pygame.draw.rect(surface, color, pygame.Rect(rect.left + corner_radius, rect.top + corner_radius, rect.width - 2 * corner_radius, rect.height - 2 * corner_radius))
 
 
 
