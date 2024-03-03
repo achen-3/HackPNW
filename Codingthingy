@@ -220,9 +220,6 @@ def draw_title_screen():
 	y = HEIGHT * 2 / 3
 	draw_square_button('Start', x, y, button_width, button_height, BUTTON_COLOR, BUTTON_HOVER_COLOR, start_game)
  
-# def draw_button(text, x, y):
-# 	# Draw the button
-# 	pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(x, y, 200, 50))
 
 def text_objects(text, font):
 	text_surface = font.render(text, True, (0, 0, 0))  # Replace (0, 0, 0) with the color you want for the text
@@ -263,19 +260,6 @@ def draw_question_and_answers():
 		draw_button(button_text, button_x, button_y, button_width, button_height, button_color, button_hover_color, button_action)
 
 
-
-
-# 	# Draw the text
-# 	draw_text(text, x + 100, y + 25)
-
-# 	# Check if the button is clicked
-# 	mouse = pygame.mouse.get_pos()
-# 	click = pygame.mouse.get_pressed()
-# 	if x < mouse[0] < x + 200 and y < mouse[1] < y + 50:
-# 		if click[0] == 1:
-# 			return True
-
-# 	return False
 
 # Main game loop
 while True:
