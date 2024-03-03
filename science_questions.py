@@ -11,16 +11,16 @@ Grade1Question9 = ["How do we measure temperature?", "Barometer", "Thermometer",
 Grade1Question10 = ["What are the different seasons of the year?",  "Spring, Summer, Fall, Winter",  "Morning, Afternoon, Evening",  "Rainy, Cloudy, Sunny",  "Hot, Warm, Cold",  1]
 
 # Grade 2 Science Questions and Answers
-Grade2Question1 = ["What are the three states of matter?", "Solid, Gas, Vapor", "Liquid, Vapor, Gas", "Solid, Liquid, Gas", "Ice, Water, Steam", 3]
-Grade2Question2 = ["Name the planets in our solar system.", "Mars, Venus, Earth", "Jupiter, Saturn, Pluto", "Mercury, Venus, Mars", "Earth, Moon, Sun", 3]
-Grade2Question3 = ["How do plants make oxygen?", "Respiration", "Photosynthesis", "Decomposition", "Transpiration", 2]
-Grade2Question4 = ["What causes day and night on Earth?", "Rotation", "Revolution", "Refraction", "Reflection", 1]
-Grade2Question5 = ["What do we call the force that pulls objects toward the center of the Earth?", "Push", "Pull", "Gravity", "Magnetism", 3]
-Grade2Question6 = ["How do shadows form?", "Absorption", "Reflection", "Refraction", "Blocking of light", 4]
-Grade2Question7 = ["What is the role of the heart in the human body?", "Circulation", "Digestion", "Respiration", "Excretion", 1]
-Grade2Question8 = ["Name three different sources of energy.", "Oil, Gasoline, Coal", "Sun, Wind, Water", "Fire, Lightning, Electricity", "Metal, Wood, Plastic", 2]
-Grade2Question9 = ["What is the difference between weather and climate?", "Same thing", "Weather is short-term, Climate is long-term", "Climate is short-term, Weather is long-term", "Weather is hot, Climate is cold", 2]
-Grade2Question10 = ["How do animals adapt to their environment?",  "By moving to another place",  "By changing their body shape",  "By learning new skills",  "By evolving over time",  1]
+N11 = ["What are the three states of matter?", "Solid, Gas, Vapor", "Liquid, Vapor, Gas", "Solid, Liquid, Gas", "Ice, Water, Steam", 3]
+N12 = ["Name the planets in our solar system.", "Mars, Venus, Earth", "Jupiter, Saturn, Pluto", "Mercury, Venus, Mars", "Earth, Moon, Sun", 3]
+N13 = ["How do plants make oxygen?", "Respiration", "Photosynthesis", "Decomposition", "Transpiration", 2]
+N14 = ["What causes day and night on Earth?", "Rotation", "Revolution", "Refraction", "Reflection", 1]
+N15 = ["What do we call the force that pulls objects toward the center of the Earth?", "Push", "Pull", "Gravity", "Magnetism", 3]
+N16 = ["How do shadows form?", "Absorption", "Reflection", "Refraction", "Blocking of light", 4]
+N17 = ["What is the role of the heart in the human body?", "Circulation", "Digestion", "Respiration", "Excretion", 1]
+N18 = ["Name three different sources of energy.", "Oil, Gasoline, Coal", "Sun, Wind, Water", "Fire, Lightning, Electricity", "Metal, Wood, Plastic", 2]
+N19 = ["What is the difference between weather and climate?", "Same thing", "Weather is short-term, Climate is long-term", "Climate is short-term, Weather is long-term", "Weather is hot, Climate is cold", 2]
+N200 = ["How do animals adapt to their environment?",  "By moving to another place",  "By changing their body shape",  "By learning new skills",  "By evolving over time",  1]
 
 # Grade 3 Science Questions and Answers
 Grade3Question1 = ["What is photosynthesis?", "Process of breathing", "Process of making food", "Process of burning", "Process of sleeping", 2]
