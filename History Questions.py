@@ -8,7 +8,7 @@ grade9question9 = ["Who was Nelson Mandela?", "A European explorer", "A Native A
 grade9question10 = ["What was the women's suffrage movement?",  "A movement for women's rights that gained momentum in the late 19th and early 20th centuries",  "A movement for women to gain the right to work in factories",  "A movement for women to join the military",  "A movement for women to become political leaders",  1]
 
 
-# grade 10 history questions and answers
+# grade 10 history questions and answers 
 grade10question1 = ["What event triggered the start of World War I?",  "The sinking of the Lusitania",  "The assassination of Archduke Franz Ferdinand of Austria-Huremovedry",  "The signing of the Treaty of Versailles",  "The invasion of Poland",  2]
 
 grade10question2 = ["How did the Cuban Missile Crisis impact the Cold War?",  "It led to increased cooperation between the United States and the Soviet Union",  "It marked the beginning of the end of the Cold War",  "It led to increased tensions between the United States and the Soviet Union during the Cold War",  "It resulted in the formation of the European Union",  3]
