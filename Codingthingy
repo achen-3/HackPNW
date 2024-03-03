@@ -237,22 +237,75 @@ def draw_button(text, x, y, width, height, color, hover_color, action=None):
 def draw_question_and_answers():
 	questions = get_questions_for_grade(state['grade'])
 	if state['question_number'] is None:
-		state['question_number'] = 0  # Start with the first question
+		state['question_number'] = 0
 	question_data = questions[state['question_number']]
-	draw_text(question_data[0], WIDTH / 2, 150)  # Draw the question
-	for i in range(4):
-		button_text = question_data[i + 1]
-		button_x = WIDTH / 2
-		button_y = 200 + i * 60
-		button_width = 200
-		button_height = 50
-		button_color = (0, 0, 255)
-		button_hover_color = (0, 0, 128)
-		button_action = None  # Replace with the actual action
-		draw_button(button_text, button_x, button_y, button_width, 
-			button_height, button_color, button_hover_color, button_action)
+	question_text = question_data[0]
+	answer_texts = question_data[1:-1]
 
+	# Create a font object
+	font = pygame.font.Font(None, 25)
 
+	# Get the width of the text
+	text_width, _ = font.size(question_text)
+
+	# Calculate the center position for the question
+	question_center_x = (WIDTH - text_width) / 2
+
+	# Draw the question at the center
+	draw_text(question_text, question_center_x, 50)
+
+	# Increase button size
+	button_width = 400
+	button_height = 150
+	button_y_start = 200
+	button_spacing = 50
+
+	# Calculate total width of two buttons and a space
+	total_width = 2 * button_width + button_spacing
+
+	for i, answer_text in enumerate(answer_texts):
+		# Centralize buttons
+		button_x = (i % 2) * (button_width + button_spacing) + (WIDTH - total_width) / 2
+		button_y = (i // 2) * (button_height + button_spacing) + button_y_start
+		draw_button(answer_text, button_x, button_y, button_width, button_height, (0, 0, 255), (0, 0, 128), lambda: process_answer(i))
+
+def process_answer(answer_index):
+	# This function will process the user's answer
+	# Replace this with your own logic
+	print(f"User selected answer {answer_index}")
+
+def get_correct_answer_index(grade, question_number):
+	questions = get_questions_for_grade(grade)
+	question_data = questions[question_number]
+	return question_data[-1]  # Get the last element of the list, which is the correct answer index
+
+def process_answer(answer_index):
+	# This function will process the user's answer
+	correct_answer_index = get_correct_answer_index(state['grade'], state['question_number'])
+	if answer_index + 1 == correct_answer_index:  # Add 1 to the user's answer index
+		state['screen_stack'].append('correct_answer')
+	else:
+		state['screen_stack'].append('wrong_answer')
+
+# Then, in your main game loop, add the following conditions:
+
+def draw_correct_answer_screen():
+	screen.fill((0, 0, 0))  # Fill the screen with black color
+	draw_text('Correct!', WIDTH / 2, HEIGHT / 2)  # Draw the text
+	draw_button('Next Question', WIDTH / 2, HEIGHT / 2 + 50, 200, 50, (0, 0, 255), (0, 0, 128), next_question)
+
+def draw_wrong_answer_screen():
+	screen.fill((0, 0, 0))  # Fill the screen with black color
+	draw_text('Wrong Answer!', WIDTH / 2, HEIGHT / 2)  # Draw the text
+	draw_button('Try Again', WIDTH / 2, HEIGHT / 2 + 50, 200, 50, (0, 0, 255), (0, 0, 128), next_question)
+
+def next_question():
+	state['question_number'] += 1  # Go to the next question
+	if state['question_number'] >= len(get_questions_for_grade(state['grade'])):  # If there are no more questions
+		state['question_number'] = None  # Reset the question number
+		state['screen_stack'].append('game_over')  # Go to the game over screen
+	else:
+		state['screen_stack'].pop()  # Remove the correct answer screen from the stack to go back to the game
 
 # Main game loop
 while True:
@@ -294,7 +347,10 @@ while True:
 		draw_text(f"Current Subject: {state['subject']}", WIDTH / 2, 100)  # Display the chosen subject below the grade
 		if state['subject'] == 'Discovery Quests':
 			draw_question_and_answers()
-
+	if current_screen == 'correct_answer':
+		draw_correct_answer_screen()
+	elif current_screen == 'wrong_answer':
+		draw_wrong_answer_screen()
 # Main game loop
 
 
